@@ -5,10 +5,10 @@ export type RefHook<T> = {
 };
 
 export const useComparatorRef = <T>(
-  value: T | null | undefined,
-  isEqual: (v1: T | null | undefined, v2: T | null | undefined) => boolean,
+  value: T | undefined,
+  isEqual: (v1?: T, v2?: T) => boolean,
   onChange?: () => void
-): RefHook<T | null | undefined> => {
+): RefHook<T | undefined> => {
   const ref = useRef(value);
   useEffect(() => {
     if (!isEqual(value, ref.current)) {
@@ -26,17 +26,18 @@ export type HasIsEqual<T> = {
 };
 
 const isEqual = <T extends HasIsEqual<T>>(
-  v1: T | null | undefined,
-  v2: T | null | undefined
+  v1: T | undefined,
+  v2: T | undefined
 ): boolean => {
-  const bothNull: boolean = !v1 && !v2;
-  const equal: boolean = !!v1 && !!v2 && v1.isEqual(v2);
-  return bothNull || equal;
+  if (!v1 || !v2) {
+    return v1 === v2;
+  }
+  return v1.isEqual(v2);
 };
 
 export const useIsEqualRef = <T extends HasIsEqual<T>>(
-  value: T | null | undefined,
+  value: T | undefined,
   onChange?: () => void
-): RefHook<T | null | undefined> => {
+): RefHook<T | undefined> => {
   return useComparatorRef(value, isEqual, onChange);
 };

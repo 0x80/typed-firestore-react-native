@@ -1,15 +1,12 @@
-import type {
-  CollectionReference,
-  DocumentReference,
-} from "@react-native-firebase/firestore";
+import type { CollectionReference, DocumentReference } from "~/firestore-types";
 import { isRefEqual } from "./isEqualRef";
 import { type RefHook, useComparatorRef } from "./refHooks";
 
 export const useIsFirestoreRefEqual = <
-  T extends DocumentReference<unknown> | CollectionReference<unknown>,
+  T extends DocumentReference | CollectionReference,
 >(
-  value: T | null | undefined,
+  value: T | undefined,
   onChange?: () => void
-): RefHook<T | null | undefined> => {
+): RefHook<T | undefined> => {
   return useComparatorRef(value, isRefEqual, onChange);
 };

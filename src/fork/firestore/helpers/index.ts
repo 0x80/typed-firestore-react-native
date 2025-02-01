@@ -1,5 +1,5 @@
+export * from "./isEqualQuery";
 export * from "./isEqualRef";
-export * from "./isQueryEqual";
 export * from "./refHooks";
 export * from "./useIsFirestoreQueryEqual";
 export * from "./useIsFirestoreRefEqual";

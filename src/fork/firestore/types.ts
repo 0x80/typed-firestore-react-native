@@ -50,9 +50,8 @@ export type DocumentOnceHook<T extends DocumentData> = [
 ];
 export type DocumentDataHook<T extends DocumentData> = [
   ...LoadingHook<T, FirestoreError>,
-  DocumentSnapshot<T> | undefined,
 ];
 export type DocumentDataOnceHook<T extends DocumentData> = [
-  ...DocumentDataHook<T>,
+  ...LoadingHook<T, FirestoreError>,
   () => Promise<void>,
 ];

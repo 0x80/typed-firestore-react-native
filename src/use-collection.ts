@@ -8,7 +8,7 @@ import type { CollectionReference, DocumentData } from "./firestore-types";
 import { useCollection_fork, useCollectionOnce_fork } from "./fork/firestore";
 import { makeMutableDocument } from "./make-mutable-document";
 import type { FsMutableDocument } from "./types";
-import { isDefined } from "./utils";
+import { getErrorMessage, isDefined } from "./utils";
 
 export function useCollection<T extends DocumentData>(
   collectionRef: CollectionReference<T>,
@@ -28,7 +28,7 @@ export function useCollection<T extends DocumentData>(
 
   if (error) {
     throw new Error(
-      `Failed to execute query on ${collectionRef.path}. Error code: ${error.code}`
+      `Failed to execute query on ${collectionRef.path}: ${getErrorMessage(error)}`
     );
   }
 
@@ -60,7 +60,7 @@ export function useCollectionOnce<T extends DocumentData>(
 
   if (error) {
     throw new Error(
-      `Failed to execute query on ${collectionRef.path}. Error code: ${error.code}`
+      `Failed to execute query on ${collectionRef.path}: ${getErrorMessage(error)}`
     );
   }
 

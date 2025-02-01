@@ -1,16 +1,8 @@
-import {
-  type CollectionReference,
-  type DocumentReference,
-  refEqual,
-} from "@react-native-firebase/firestore";
+import type { CollectionReference, DocumentReference } from "~/firestore-types";
 
-export const isRefEqual = <
-  T extends DocumentReference<unknown> | CollectionReference<unknown>,
->(
-  v1: T | null | undefined,
-  v2: T | null | undefined
+export const isRefEqual = <T extends DocumentReference | CollectionReference>(
+  v1: T | undefined,
+  v2: T | undefined
 ): boolean => {
-  const bothNull: boolean = !v1 && !v2;
-  const equal: boolean = !!v1 && !!v2 && refEqual(v1, v2);
-  return bothNull || equal;
+  return v1?.path === v2?.path;
 };

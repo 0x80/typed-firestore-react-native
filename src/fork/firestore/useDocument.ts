@@ -1,15 +1,15 @@
 import {
-  type DocumentData,
-  type DocumentReference,
-  type DocumentSnapshot,
-  type FirestoreError,
   getDoc,
   getDocFromCache,
   getDocFromServer,
   onSnapshot,
-  type SnapshotOptions,
 } from "@react-native-firebase/firestore";
 import { useCallback, useEffect, useMemo } from "react";
+import type {
+  DocumentData,
+  DocumentReference,
+  DocumentSnapshot,
+} from "~/firestore-types";
 import {
   useIsFirestoreRefEqual,
   useIsMounted,
@@ -22,21 +22,20 @@ import type {
   DocumentHook,
   DocumentOnceHook,
   GetOptions,
-  InitialValueOptions,
   OnceDataOptions,
   OnceOptions,
   Options,
 } from "./types";
 
-export const useDocument_fork = <T = DocumentData>(
-  docRef?: DocumentReference<T> | null,
+export const useDocument_fork = <T extends DocumentData>(
+  docRef?: DocumentReference<T>,
   options?: Options
 ): DocumentHook<T> => {
   const { error, loading, reset, setError, setValue, value } = useLoadingValue<
     DocumentSnapshot<T>,
-    FirestoreError
+    Error
   >();
-  const ref = useIsFirestoreRefEqual<DocumentReference<T>>(docRef, reset);
+  const ref = useIsFirestoreRefEqual(docRef, reset);
 
   useEffect(() => {
     if (!ref.current) {
@@ -48,9 +47,17 @@ export const useDocument_fork = <T = DocumentData>(
           ref.current,
           options.snapshotListenOptions,
           setValue,
-          setError
+          (err: Error) => {
+            if (err instanceof Error) {
+              setError(err);
+            }
+          }
         )
-      : onSnapshot(ref.current, setValue, setError);
+      : onSnapshot(ref.current, setValue, (err: Error) => {
+          if (err instanceof Error) {
+            setError(err);
+          }
+        });
 
     return () => {
       unsubscribe();
@@ -60,16 +67,16 @@ export const useDocument_fork = <T = DocumentData>(
   return [value!, loading, error];
 };
 
-export function useDocumentOnce_fork<T = DocumentData>(
-  docRef?: DocumentReference<T> | null,
+export function useDocumentOnce_fork<T extends DocumentData>(
+  docRef?: DocumentReference<T>,
   options?: OnceOptions
 ): DocumentOnceHook<T> {
   const { error, loading, reset, setError, setValue, value } = useLoadingValue<
     DocumentSnapshot<T>,
-    FirestoreError
+    Error
   >();
   const isMounted = useIsMounted();
-  const ref = useIsFirestoreRefEqual<DocumentReference<T>>(docRef, reset);
+  const ref = useIsFirestoreRefEqual(docRef, reset);
 
   const loadData = useCallback(
     async (reference?: DocumentReference<T> | null, options?: OnceOptions) => {
@@ -84,9 +91,11 @@ export function useDocumentOnce_fork<T = DocumentData>(
         if (isMounted) {
           setValue(result);
         }
-      } catch (error) {
+      } catch (err: unknown) {
         if (isMounted) {
-          setError(error as FirestoreError);
+          if (err instanceof Error) {
+            setError(err);
+          }
         }
       }
     },
@@ -104,43 +113,39 @@ export function useDocumentOnce_fork<T = DocumentData>(
       return;
     }
 
-    loadData(ref.current, options).catch(setError);
+    loadData(ref.current, options).catch((err: unknown) => {
+      if (err instanceof Error) {
+        setError(err);
+      }
+    });
   }, [ref.current]);
 
   return [value!, loading, error, reloadData];
 }
 
-export function useDocumentData_fork<T = DocumentData>(
-  docRef?: DocumentReference<T> | null,
-  options?: DataOptions & InitialValueOptions<T>
+export function useDocumentData_fork<T extends DocumentData>(
+  docRef?: DocumentReference<T>,
+  options?: DataOptions
 ): DocumentDataHook<T> {
   const [snapshot, loading, error] = useDocument_fork<T>(docRef, options);
 
-  const value = getValueFromSnapshot(
-    snapshot,
-    options?.snapshotOptions,
-    options?.initialValue
-  );
+  const value = getValueFromSnapshot(snapshot);
 
-  return [value, loading, error, snapshot];
+  return [value, loading, error];
 }
 
-export function useDocumentDataOnce_fork<T = DocumentData>(
-  docRef?: DocumentReference<T> | null,
-  options?: OnceDataOptions & InitialValueOptions<T>
+export function useDocumentDataOnce_fork<T extends DocumentData>(
+  docRef?: DocumentReference<T>,
+  options?: OnceDataOptions
 ): DocumentDataOnceHook<T> {
   const [snapshot, loading, error, reloadData] = useDocumentOnce_fork<T>(
     docRef,
     options
   );
 
-  const value = getValueFromSnapshot(
-    snapshot,
-    options?.snapshotOptions,
-    options?.initialValue
-  );
+  const value = getValueFromSnapshot<T>(snapshot);
 
-  return [value, loading, error, snapshot, reloadData];
+  return [value, loading, error, reloadData];
 }
 
 const getDocFnFromGetOptions = (
@@ -157,13 +162,12 @@ const getDocFnFromGetOptions = (
   }
 };
 
-const getValueFromSnapshot = <T>(
+const getValueFromSnapshot = <T extends DocumentData>(
   snapshot: DocumentSnapshot<T> | undefined,
-  options?: SnapshotOptions,
   initialValue?: T
 ): T | undefined => {
   return useMemo(
-    () => snapshot?.data(options) ?? initialValue,
-    [snapshot, options, initialValue]
+    () => (snapshot?.exists ? snapshot.data() : initialValue),
+    [snapshot, initialValue]
   );
 };

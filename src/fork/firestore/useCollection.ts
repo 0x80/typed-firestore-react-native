@@ -25,7 +25,7 @@ import type {
 } from "./types";
 
 export function useCollection_fork<T extends DocumentData>(
-  query?: Query<T> | null,
+  query?: Query<T>,
   options?: Options
 ): CollectionHook<T> {
   const { error, loading, reset, setError, setValue, value } = useLoadingValue<
@@ -57,7 +57,7 @@ export function useCollection_fork<T extends DocumentData>(
 }
 
 export function useCollectionOnce_fork<T extends DocumentData>(
-  query?: Query<T> | null,
+  query?: Query<T>,
   options?: OnceOptions
 ): CollectionOnceHook<T> {
   const { error, loading, reset, setError, setValue, value } = useLoadingValue<
@@ -102,7 +102,7 @@ export function useCollectionOnce_fork<T extends DocumentData>(
 }
 
 export function useCollectionData_fork<T extends DocumentData>(
-  query?: Query<T> | null,
+  query?: Query<T>,
   options?: DataOptions
 ): CollectionDataHook<T> {
   const [snapshots, loading, error] = useCollection_fork<T>(query, options);
@@ -113,7 +113,7 @@ export function useCollectionData_fork<T extends DocumentData>(
 }
 
 export function useCollectionDataOnce_fork<T extends DocumentData>(
-  query?: Query<T> | null,
+  query?: Query<T>,
   options?: OnceDataOptions
 ): CollectionDataOnceHook<T> {
   const [snapshots, loading, error, reloadData] = useCollectionOnce_fork<T>(

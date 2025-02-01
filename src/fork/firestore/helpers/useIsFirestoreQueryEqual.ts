@@ -1,10 +1,10 @@
-import type { Query } from "@react-native-firebase/firestore";
-import { isQueryEqual } from "./isQueryEqual";
+import type { Query } from "~/firestore-types";
+import { isEqualQuery } from "./isEqualQuery";
 import { type RefHook, useComparatorRef } from "./refHooks";
 
-export const useIsFirestoreQueryEqual = <T extends Query<unknown>>(
-  value: T | null | undefined,
+export const useIsFirestoreQueryEqual = <T extends Query>(
+  value: T | undefined,
   onChange?: () => void
-): RefHook<T | null | undefined> => {
-  return useComparatorRef(value, isQueryEqual, onChange);
+): RefHook<T | undefined> => {
+  return useComparatorRef(value, isEqualQuery, onChange);
 };
