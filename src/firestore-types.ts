@@ -4,9 +4,6 @@
  */
 import type { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 
-/** Export UpdateData type from firestore */
-export { type UpdateData } from "@react-native-firebase/firestore";
-
 export type DocumentData = FirebaseFirestoreTypes.DocumentData;
 
 export type DocumentReference<

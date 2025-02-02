@@ -5,7 +5,7 @@ import type {
   DocumentData,
   DocumentReference,
 } from "./firestore-types";
-import { useDocument_fork, useDocumentOnce_fork } from "./fork/firestore";
+import { useDocument_fork, useDocumentOnce_fork } from "./fork";
 import { makeMutableDocument } from "./make-mutable-document";
 import type { FsMutableDocument } from "./types.js";
 

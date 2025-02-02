@@ -1,11 +1,11 @@
 import {
-  type QueryConstraint,
   limit,
   query,
+  type QueryConstraint,
 } from "@react-native-firebase/firestore";
 import { useMemo } from "react";
 import type { CollectionReference, DocumentData } from "./firestore-types";
-import { useCollection_fork, useCollectionOnce_fork } from "./fork/firestore";
+import { useCollection_fork, useCollectionOnce_fork } from "./fork";
 import { makeMutableDocument } from "./make-mutable-document";
 import type { FsMutableDocument } from "./types";
 import { getErrorMessage, isDefined } from "./utils";
