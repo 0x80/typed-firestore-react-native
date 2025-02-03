@@ -1,8 +1,5 @@
 # Typed Firestore - React Native
 
-⚠️ This library is probably not ready for production yet. I have yet to verify
-it in a React Native project.
-
 Elegant, typed abstractions for handling Firestore documents in React Native
 applications.
 
