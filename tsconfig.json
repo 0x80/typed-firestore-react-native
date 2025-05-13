@@ -1,6 +1,7 @@
 {
   "extends": "@codecompose/typescript-config/single-library",
   "compilerOptions": {
+    "types": ["react-native"],
     "outDir": "./dist" // tsc-alias needs this for now
   }
 }
