@@ -1,23 +1,22 @@
 import { renderHook } from "@testing-library/react-hooks";
 import firestore, {
   collection,
-  query,
   where,
   orderBy,
   limit,
 } from "@react-native-firebase/firestore";
 import { useCollection } from "../use-collection";
-import type { DocumentData, CollectionReference } from "../firestore-types";
+import type { CollectionReference } from "../firestore-types";
 import { describe, it, expect } from "vitest";
 
 // Define a sample document type
-interface TodoItem extends DocumentData {
+type TodoItem = {
   id: string;
   title: string;
   completed: boolean;
   priority: number;
   dueDate: Date;
-}
+};
 
 describe("useCollection", () => {
   it("should have correct type inference", () => {
