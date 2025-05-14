@@ -27,7 +27,7 @@ describe("useCollection", () => {
     ) as CollectionReference<TodoItem>;
 
     // The actual test is that this compiles without type errors
-    const { result } = renderHook(() => useCollection<TodoItem>(collectionRef));
+    const { result } = renderHook(() => useCollection(collectionRef));
 
     // TypeScript should infer this as: [FsMutableDocument<TodoItem>[], false] | [undefined, true]
     const [docs, loading] = result.current;
@@ -52,7 +52,7 @@ describe("useCollection", () => {
 
     // The actual test is that this compiles without type errors
     const { result } = renderHook(() =>
-      useCollection<TodoItem>(
+      useCollection(
         collectionRef,
         where("completed", "==", false),
         where("priority", ">", 1),
