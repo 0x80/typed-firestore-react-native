@@ -1,20 +1,17 @@
-import { doc } from "@react-native-firebase/firestore";
 import { useMemo } from "react";
-import type { CollectionReference, DocumentData } from "./firestore-types";
+import type { DocumentData, DocumentReference } from "./firestore-types";
 import { useDocument_fork, useDocumentOnce_fork } from "./fork";
 import { makeMutableDocument } from "./make-mutable-document";
 import type { FsMutableDocument } from "./types.js";
 
-export function useDocument<T extends DocumentData>(
-  collectionRef: CollectionReference<T>,
-  documentId?: string
+export function useSpecificDocument<T extends DocumentData>(
+  documentRef: DocumentReference<T>
 ): [FsMutableDocument<T>, false] | [undefined, true] {
-  const ref = documentId ? doc(collectionRef, documentId) : undefined;
   /**
    * We do not need the loading state really. If there is no data, and there is
    * no error, it means data is still loading.
    */
-  const [snapshot, , error] = useDocument_fork(ref);
+  const [snapshot, , error] = useDocument_fork(documentRef);
 
   if (error) {
     throw error;
@@ -29,12 +26,10 @@ export function useDocument<T extends DocumentData>(
 }
 
 /** A version of useDocument that doesn't throw when the document doesn't exist. */
-export function useDocumentMaybe<T extends DocumentData>(
-  collectionRef: CollectionReference<T>,
-  documentId?: string
+export function useSpecificDocumentMaybe<T extends DocumentData>(
+  documentRef: DocumentReference<T>
 ): [FsMutableDocument<T> | undefined, boolean] {
-  const ref = documentId ? doc(collectionRef, documentId) : undefined;
-  const [snapshot, isLoading] = useDocument_fork(ref);
+  const [snapshot, isLoading] = useDocument_fork(documentRef);
 
   const document = useMemo(
     () => (snapshot?.exists ? makeMutableDocument(snapshot) : undefined),
@@ -44,25 +39,22 @@ export function useDocumentMaybe<T extends DocumentData>(
   return [document, isLoading];
 }
 
-export function useDocumentData<T extends DocumentData>(
-  collectionRef: CollectionReference<T>,
-  documentId?: string
+export function useSpecificDocumentData<T extends DocumentData>(
+  documentRef: DocumentReference<T>
 ): [T, false] | [undefined, true] {
-  const [document, isLoading] = useDocument(collectionRef, documentId);
+  const [document, isLoading] = useSpecificDocument(documentRef);
 
   return isLoading ? [undefined, true] : [document.data, false];
 }
 
-export function useDocumentOnce<T extends DocumentData>(
-  collectionRef: CollectionReference<T>,
-  documentId?: string
+export function useSpecificDocumentOnce<T extends DocumentData>(
+  documentRef: DocumentReference<T>
 ): [FsMutableDocument<T>, false] | [undefined, true] {
-  const ref = documentId ? doc(collectionRef, documentId) : undefined;
   /**
    * We do not need the loading state really. If there is no data, and there is
    * no error, it means data is still loading.
    */
-  const [snapshot, , error] = useDocumentOnce_fork(ref);
+  const [snapshot, , error] = useDocumentOnce_fork(documentRef);
 
   if (error) {
     throw error;
@@ -76,11 +68,10 @@ export function useDocumentOnce<T extends DocumentData>(
   return document ? [document, false] : [undefined, true];
 }
 
-export function useDocumentDataOnce<T extends DocumentData>(
-  collectionRef: CollectionReference<T>,
-  documentId?: string
+export function useSpecificDocumentDataOnce<T extends DocumentData>(
+  documentRef: DocumentReference<T>
 ): [T, false] | [undefined, true] {
-  const [document, isLoading] = useDocumentOnce(collectionRef, documentId);
+  const [document, isLoading] = useSpecificDocumentOnce(documentRef);
 
   return isLoading ? [undefined, true] : [document.data, false];
 }

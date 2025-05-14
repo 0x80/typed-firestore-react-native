@@ -6,4 +6,5 @@ export * from "./make-mutable-document";
 export * from "./types";
 export * from "./use-collection";
 export * from "./use-document";
+export * from "./use-specific-document";
 export * from "./utils";
