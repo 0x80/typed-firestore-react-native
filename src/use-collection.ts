@@ -10,9 +10,18 @@ import { makeMutableDocument } from "./make-mutable-document";
 import type { FsMutableDocument } from "./types";
 import { getErrorMessage, isDefined } from "./utils";
 
+/**
+ * The @react-native-firebase/firestore query constraint functions where,
+ * orderBy, limit, etc. are incorrectly typed and are missing the `_apply`
+ * method.
+ *
+ * Exclude the `_apply` method to make the type checker happy.
+ */
+type QueryConstraints = (Omit<QueryConstraint, "_apply"> | undefined)[];
+
 export function useCollection<T extends DocumentData>(
   collectionRef: CollectionReference<T>,
-  ...queryConstraints: (QueryConstraint | undefined)[]
+  ...queryConstraints: QueryConstraints
 ): [FsMutableDocument<T>[], false] | [undefined, true] {
   const hasNoConstraints = queryConstraints.length === 0;
 
@@ -44,7 +53,7 @@ export function useCollection<T extends DocumentData>(
 
 export function useCollectionOnce<T extends DocumentData>(
   collectionRef: CollectionReference<T>,
-  ...queryConstraints: (QueryConstraint | undefined)[]
+  ...queryConstraints: QueryConstraints
 ): [FsMutableDocument<T>[], false] | [undefined, true] {
   const hasNoConstraints = queryConstraints.length === 0;
 
