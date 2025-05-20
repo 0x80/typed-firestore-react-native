@@ -97,15 +97,20 @@ should be available (because otherwise an error would have been thrown).
 
 ### Hooks
 
-| Hook                  | Description                                                                |
-| --------------------- | -------------------------------------------------------------------------- |
-| `useDocument`         | Use a document and subscribe to changes                                    |
-| `useDocumentData`     | Use only the data part of a document and subscribe to changes              |
-| `useDocumentMaybe`    | Use a document that might not exist                                        |
-| `useDocumentOnce`     | Use a document once and do not subscribe for changes                       |
-| `useDocumentDataOnce` | Use only the data part of a document once and do not subscribe for changes |
-| `useCollection`       | Query a collection and subscribe for changes                               |
-| `useCollectionOnce`   | Query a collection once and do not subscribe for changes                   |
+| Hook                          | Description                                                                |
+| ----------------------------- | -------------------------------------------------------------------------- |
+| `useDocument`                 | Use a document and subscribe to changes                                    |
+| `useDocumentData`             | Use only the data part of a document and subscribe to changes              |
+| `useDocumentMaybe`            | Use a document that might not exist                                        |
+| `useDocumentOnce`             | Use a document once and do not subscribe for changes                       |
+| `useDocumentDataOnce`         | Use only the data part of a document once and do not subscribe for changes |
+| `useSpecificDocument`         | Use a document and subscribe to changes                                    |
+| `useSpecificDocumentData`     | Use only the data part of a document and subscribe to changes              |
+| `useSpecificDocumentMaybe`    | Use a document that might not exist                                        |
+| `useSpecificDocumentOnce`     | Use a document once and do not subscribe for changes                       |
+| `useSpecificDocumentDataOnce` | Use only the data part of a document once and do not subscribe for changes |
+| `useCollection`               | Query a collection and subscribe for changes                               |
+| `useCollectionOnce`           | Query a collection once and do not subscribe for changes                   |
 
 ### Functions
 
