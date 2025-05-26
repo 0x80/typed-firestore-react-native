@@ -47,6 +47,13 @@ export function useSpecificDocumentData<T extends DocumentData>(
   return isLoading ? [undefined, true] : [document.data, false];
 }
 
+export function useSpecificDocumentDataMaybe<T extends DocumentData>(
+  documentRef: DocumentReference<T>
+): [T | undefined, boolean] {
+  const [document, isLoading] = useSpecificDocumentMaybe(documentRef);
+  return [document?.data, isLoading];
+}
+
 export function useSpecificDocumentOnce<T extends DocumentData>(
   documentRef: DocumentReference<T>
 ): [FsMutableDocument<T>, false] | [undefined, true] {
