@@ -37,7 +37,7 @@ export function useCollections<T extends DocumentData>(
       if (
         existingSubscription &&
         collection.query &&
-        existingSubscription?.query?.isEqual(collection.query)
+        existingSubscription.query?.isEqual(collection.query)
       ) {
         return;
       }
@@ -168,7 +168,7 @@ function compareCollection<T extends DocumentData>(
 
 let queryKeyCounter = 0;
 function generateQueryKey() {
-  return `query-${queryKeyCounter++}`;
+  return `query-${String(queryKeyCounter++)}`;
 }
 
 function isShallowArrayEqual<T>(a: T[] | undefined, b: T[] | undefined) {

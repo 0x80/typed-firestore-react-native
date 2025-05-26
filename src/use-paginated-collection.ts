@@ -27,7 +27,9 @@ export function usePaginatedCollection<T extends DocumentData>(
   const [queries, setQueries] = useState(() => getInitialQueries());
 
   /** Reset queries when query changes */
-  useIsFirestoreQueryEqual(_query, () => setQueries(getInitialQueries()));
+  useIsFirestoreQueryEqual(_query, () => {
+    setQueries(getInitialQueries());
+  });
 
   const results = useCollections(queries);
 
@@ -48,8 +50,8 @@ export function usePaginatedCollection<T extends DocumentData>(
       setQueries((prevQueries) => [
         ...prevQueries,
         {
-          query: _query?.startAfter(lastDoc).limit(pageSize),
-          queryKey: `page-${prevQueries.length + 1}`,
+          query: _query.startAfter(lastDoc).limit(pageSize),
+          queryKey: `page-${String(prevQueries.length + 1)}`,
         },
       ]);
     };
