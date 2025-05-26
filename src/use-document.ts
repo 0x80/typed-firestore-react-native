@@ -53,6 +53,14 @@ export function useDocumentData<T extends DocumentData>(
   return isLoading ? [undefined, true] : [document.data, false];
 }
 
+export function useDocumentDataMaybe<T extends DocumentData>(
+  collectionRef: CollectionReference<T>,
+  documentId?: string
+): [T | undefined, boolean] {
+  const [document, isLoading] = useDocumentMaybe(collectionRef, documentId);
+  return [document?.data, isLoading];
+}
+
 export function useDocumentOnce<T extends DocumentData>(
   collectionRef: CollectionReference<T>,
   documentId?: string
