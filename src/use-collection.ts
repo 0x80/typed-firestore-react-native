@@ -1,23 +1,14 @@
-import {
-  limit,
-  query,
-  type QueryConstraint,
-} from "@react-native-firebase/firestore";
+import { limit, query } from "@react-native-firebase/firestore";
 import { useMemo } from "react";
-import type { CollectionReference, DocumentData } from "./firestore-types";
+import type {
+  CollectionReference,
+  DocumentData,
+  QueryConstraints,
+} from "./firestore-types";
 import { useCollection_fork, useCollectionOnce_fork } from "./fork";
 import { makeMutableDocument } from "./make-mutable-document";
 import type { FsMutableDocument } from "./types";
 import { getErrorMessage, isDefined } from "./utils";
-
-/**
- * The @react-native-firebase/firestore query constraint functions where,
- * orderBy, limit, etc. are incorrectly typed and are missing the `_apply`
- * method.
- *
- * Exclude the `_apply` method to make the type checker happy.
- */
-type QueryConstraints = (Omit<QueryConstraint, "_apply"> | undefined)[];
 
 export function useCollection<T extends DocumentData>(
   collectionRef: CollectionReference<T>,

@@ -113,6 +113,7 @@ should be available (because otherwise an error would have been thrown).
 | `useSpecificDocumentDataOnce`  | Use only the data part of a document once and do not subscribe for changes |
 | `useCollection`                | Query a collection and subscribe for changes                               |
 | `useCollectionOnce`            | Query a collection once and do not subscribe for changes                   |
+| `useCollectionCountOnce`       | Query the number of documents                                              |
 
 ### Functions
 
@@ -136,6 +137,7 @@ const { data, isError } = useQuery({
 | `getSpecificDocument`              | Fetch a specific document                                      |
 | `getSpecificDocumentData`          | Fetch only the data part of a specific document                |
 | `getSpecificDocumentInTransaction` | Fetch a specific document as part of a transaction             |
+| `getCollectionCount`               | Fetch the number of documents in a query                       |
 
 ## Working with Documents
 
