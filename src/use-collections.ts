@@ -1,4 +1,7 @@
-import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
+import {
+  FirebaseFirestoreTypes,
+  onSnapshot,
+} from "@react-native-firebase/firestore";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { FsMutableDocument } from "./types";
 import type { DocumentData, Query } from "./firestore-types";
@@ -51,28 +54,31 @@ export function useCollections<T extends DocumentData>(
         ...collection,
         queryKey,
       };
-      const unsubscribe = collection.query?.onSnapshot(
-        (snapshot) => {
-          const data = snapshot.docs.map((doc) => makeMutableDocument(doc));
-          setResults((existingResults) => {
-            const filteredResults = existingResults.filter(
-              (c) => !compareCollection(c, normalizedCollection)
-            );
-            return [
-              ...filteredResults,
-              { ...normalizedCollection, data, snapshots: snapshot.docs },
-            ];
-          });
-        },
-        (error) => {
-          setResults((existingResults) => {
-            const filteredResults = existingResults.filter(
-              (c) => !compareCollection(c, normalizedCollection)
-            );
-            return [...filteredResults, { ...normalizedCollection, error }];
-          });
-        }
-      );
+      const unsubscribe = collection.query
+        ? onSnapshot(
+            collection.query,
+            (snapshot) => {
+              const data = snapshot.docs.map((doc) => makeMutableDocument(doc));
+              setResults((existingResults) => {
+                const filteredResults = existingResults.filter(
+                  (c) => !compareCollection(c, normalizedCollection)
+                );
+                return [
+                  ...filteredResults,
+                  { ...normalizedCollection, data, snapshots: snapshot.docs },
+                ];
+              });
+            },
+            (error) => {
+              setResults((existingResults) => {
+                const filteredResults = existingResults.filter(
+                  (c) => !compareCollection(c, normalizedCollection)
+                );
+                return [...filteredResults, { ...normalizedCollection, error }];
+              });
+            }
+          )
+        : undefined;
 
       /** Unsubscribe any existing snapshot listener */
       existingSubscription?.unsubscribe?.();
