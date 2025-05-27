@@ -3,7 +3,7 @@ import {
   getDocFromCache,
   getDocFromServer,
   onSnapshot,
-} from "@react-native-firebase/firestore";
+} from "../firestore";
 import { useCallback, useEffect, useMemo } from "react";
 import type {
   DocumentData,

@@ -1,4 +1,4 @@
-import { doc, getDoc } from "@react-native-firebase/firestore";
+import { doc, getDoc } from "./firestore";
 import { invariant } from "~/utils";
 import type {
   CollectionReference,

@@ -2,7 +2,16 @@
  * The official @react-native-firebase types are awkward. Re-export the ones
  * that have a forced namespace so they align better with other SDKs.
  */
-import type { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
+import type {
+  FirebaseFirestoreTypes,
+  QueryConstraint,
+} from "@react-native-firebase/firestore";
+
+export type {
+  QueryConstraint,
+  UpdateData,
+  FirestoreError,
+} from "@react-native-firebase/firestore";
 
 export type DocumentData = FirebaseFirestoreTypes.DocumentData;
 
@@ -25,5 +34,10 @@ export type Query<T extends DocumentData = DocumentData> =
 export type QuerySnapshot<T extends DocumentData = DocumentData> =
   FirebaseFirestoreTypes.QuerySnapshot<T>;
 
+export type QueryDocumentSnapshot<T extends DocumentData = DocumentData> =
+  FirebaseFirestoreTypes.QueryDocumentSnapshot<T>;
+
 export type SnapshotListenOptions =
   FirebaseFirestoreTypes.SnapshotListenOptions;
+
+export type QueryConstraints = (Omit<QueryConstraint, "_apply"> | undefined)[];

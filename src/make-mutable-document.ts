@@ -1,8 +1,4 @@
-import {
-  deleteDoc,
-  updateDoc,
-  type UpdateData,
-} from "@react-native-firebase/firestore";
+import { deleteDoc, updateDoc } from "./firestore";
 import type {
   FsMutableDocument,
   FsMutableDocumentInTransaction,
@@ -11,6 +7,7 @@ import type {
   DocumentData,
   DocumentSnapshot,
   Transaction,
+  UpdateData,
 } from "./firestore-types";
 
 export function makeMutableDocument<T extends DocumentData>(
