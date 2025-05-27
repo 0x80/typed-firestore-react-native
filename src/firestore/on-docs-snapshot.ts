@@ -39,7 +39,7 @@ export function onDocsSnapshot<T extends DocumentData>(
   });
 }
 
-export function addOnDocsSnapshotMiddleware(
+export function registerOnDocsSnapshotMiddleware(
   middleware: Parameters<(typeof manager)["use"]>[0]
 ) {
   manager.use(middleware);

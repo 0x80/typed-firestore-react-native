@@ -33,7 +33,7 @@ export function getDoc<T extends DocumentData>(
   return manager.run({ reference, source }) as Promise<DocumentSnapshot<T>>;
 }
 
-export function addGetDocMiddleware(
+export function registerGetDocMiddleware(
   middleware: Parameters<(typeof manager)["use"]>[0]
 ) {
   manager.use(middleware);
