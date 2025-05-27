@@ -1,9 +1,4 @@
-import {
-  getDoc,
-  getDocFromCache,
-  getDocFromServer,
-  onSnapshot,
-} from "../firestore";
+import { getDoc, onDocSnapshot } from "../firestore";
 import { useCallback, useEffect, useMemo } from "react";
 import type {
   DocumentData,
@@ -21,7 +16,6 @@ import type {
   DocumentDataOnceHook,
   DocumentHook,
   DocumentOnceHook,
-  GetOptions,
   OnceDataOptions,
   OnceOptions,
   Options,
@@ -42,22 +36,16 @@ export const useDocument_fork = <T extends DocumentData>(
       setValue(undefined);
       return;
     }
-    const unsubscribe = options?.snapshotListenOptions
-      ? onSnapshot(
-          ref.current,
-          options.snapshotListenOptions,
-          setValue,
-          (err: Error) => {
-            if (err instanceof Error) {
-              setError(err);
-            }
-          }
-        )
-      : onSnapshot(ref.current, setValue, (err: Error) => {
-          if (err instanceof Error) {
-            setError(err);
-          }
-        });
+    const unsubscribe = onDocSnapshot(
+      ref.current,
+      options?.snapshotListenOptions,
+      setValue,
+      (err: Error) => {
+        if (err instanceof Error) {
+          setError(err);
+        }
+      }
+    );
 
     return () => {
       unsubscribe();
@@ -84,10 +72,9 @@ export function useDocumentOnce_fork<T extends DocumentData>(
         setValue(undefined);
         return;
       }
-      const get = getDocFnFromGetOptions(options?.getOptions);
 
       try {
-        const result = await get(reference);
+        const result = await getDoc(reference, options?.getOptions?.source);
         if (isMounted) {
           setValue(result);
         }
@@ -147,20 +134,6 @@ export function useDocumentDataOnce_fork<T extends DocumentData>(
 
   return [value, loading, error, reloadData];
 }
-
-const getDocFnFromGetOptions = (
-  { source }: GetOptions = { source: "default" }
-) => {
-  switch (source) {
-    default:
-    case "default":
-      return getDoc;
-    case "cache":
-      return getDocFromCache;
-    case "server":
-      return getDocFromServer;
-  }
-};
 
 const getValueFromSnapshot = <T extends DocumentData>(
   snapshot: DocumentSnapshot<T> | undefined,

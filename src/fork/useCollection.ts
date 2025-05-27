@@ -1,9 +1,4 @@
-import {
-  getDocs,
-  getDocsFromCache,
-  getDocsFromServer,
-  onSnapshot,
-} from "../firestore";
+import { getDocs, onDocsSnapshot } from "../firestore";
 import { useCallback, useEffect, useMemo } from "react";
 import type {
   DocumentData,
@@ -22,7 +17,6 @@ import type {
   CollectionHook,
   CollectionOnceHook,
   DataOptions,
-  GetOptions,
   OnceDataOptions,
   OnceOptions,
   Options,
@@ -43,14 +37,12 @@ export function useCollection_fork<T extends DocumentData>(
       setValue(undefined);
       return;
     }
-    const unsubscribe = options?.snapshotListenOptions
-      ? onSnapshot(
-          ref.current,
-          options.snapshotListenOptions,
-          setValue,
-          setError
-        )
-      : onSnapshot(ref.current, setValue, setError);
+    const unsubscribe = onDocsSnapshot(
+      ref.current,
+      options?.snapshotListenOptions,
+      setValue,
+      setError
+    );
 
     return () => {
       unsubscribe();
@@ -77,10 +69,9 @@ export function useCollectionOnce_fork<T extends DocumentData>(
         setValue(undefined);
         return;
       }
-      const get = getDocsFnFromGetOptions(options?.getOptions);
 
       try {
-        const result = await get(query);
+        const result = await getDocs(query, options?.getOptions?.source);
         if (isMounted) {
           setValue(result);
         }
@@ -134,18 +125,4 @@ const getValuesFromSnapshots = <T extends DocumentData>(
   snapshots: QuerySnapshot<T> | undefined
 ): T[] | undefined => {
   return useMemo(() => snapshots?.docs.map((doc) => doc.data()), [snapshots]);
-};
-
-const getDocsFnFromGetOptions = (
-  { source }: GetOptions = { source: "default" }
-) => {
-  switch (source) {
-    default:
-    case "default":
-      return getDocs;
-    case "cache":
-      return getDocsFromCache;
-    case "server":
-      return getDocsFromServer;
-  }
 };
