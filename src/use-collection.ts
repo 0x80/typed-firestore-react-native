@@ -1,4 +1,4 @@
-import { limit, query } from "@react-native-firebase/firestore";
+import { limit, query } from "./firestore";
 import { useMemo } from "react";
 import type {
   CollectionReference,

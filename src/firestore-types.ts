@@ -28,6 +28,9 @@ export type Query<T extends DocumentData = DocumentData> =
 export type QuerySnapshot<T extends DocumentData = DocumentData> =
   FirebaseFirestoreTypes.QuerySnapshot<T>;
 
+export type QueryDocumentSnapshot<T extends DocumentData = DocumentData> =
+  FirebaseFirestoreTypes.QueryDocumentSnapshot<T>;
+
 export type SnapshotListenOptions =
   FirebaseFirestoreTypes.SnapshotListenOptions;
 

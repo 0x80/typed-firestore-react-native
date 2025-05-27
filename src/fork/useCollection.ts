@@ -1,12 +1,16 @@
 import {
-  type FirestoreError,
   getDocs,
   getDocsFromCache,
   getDocsFromServer,
   onSnapshot,
-} from "@react-native-firebase/firestore";
+} from "../firestore";
 import { useCallback, useEffect, useMemo } from "react";
-import type { DocumentData, Query, QuerySnapshot } from "~/firestore-types";
+import type {
+  DocumentData,
+  Query,
+  QuerySnapshot,
+  FirestoreError,
+} from "~/firestore-types";
 import {
   useIsFirestoreQueryEqual,
   useIsMounted,

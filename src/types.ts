@@ -1,8 +1,8 @@
-import type { UpdateData } from "@react-native-firebase/firestore";
 import type {
   DocumentData,
   DocumentReference,
   Transaction,
+  UpdateData,
 } from "./firestore-types";
 
 /**
