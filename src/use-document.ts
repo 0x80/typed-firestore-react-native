@@ -1,4 +1,4 @@
-import { doc } from "@react-native-firebase/firestore";
+import { doc } from "./firestore";
 import { useMemo } from "react";
 import type { CollectionReference, DocumentData } from "./firestore-types";
 import { useDocument_fork, useDocumentOnce_fork } from "./fork";
