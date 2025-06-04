@@ -84,10 +84,6 @@ export function useCollectionMaybe<T extends DocumentData>(
     ? query(collectionRef, limit(500))
     : query(collectionRef, ...queryConstraints.filter(isDefined));
 
-  /**
-   * We do not need the loading state really. If there is no data, and there is
-   * no error, it means data is still loading.
-   */
   const [snapshot, isLoading] = useCollection_fork(_query);
 
   const docs = useMemo(() => {
