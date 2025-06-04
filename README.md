@@ -113,6 +113,7 @@ should be available (because otherwise an error would have been thrown).
 | `useSpecificDocumentDataOnce`  | Use only the data part of a document once and do not subscribe for changes |
 | `useCollection`                | Query a collection and subscribe for changes                               |
 | `useCollectionOnce`            | Query a collection once and do not subscribe for changes                   |
+| `useCollectionMaybe`           | Query a collection and subscribe for changes, but never throw              |
 | `useCollectionCountOnce`       | Query the number of documents                                              |
 
 ### Functions

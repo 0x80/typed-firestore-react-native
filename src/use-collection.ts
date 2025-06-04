@@ -73,3 +73,29 @@ export function useCollectionOnce<T extends DocumentData>(
 
   return docs ? [docs, false] : [undefined, true];
 }
+
+export function useCollectionMaybe<T extends DocumentData>(
+  collectionRef: CollectionReference<T>,
+  ...queryConstraints: QueryConstraints
+): [FsMutableDocument<T>[] | undefined, boolean] {
+  const hasNoConstraints = queryConstraints.length === 0;
+
+  const _query = hasNoConstraints
+    ? query(collectionRef, limit(500))
+    : query(collectionRef, ...queryConstraints.filter(isDefined));
+
+  /**
+   * We do not need the loading state really. If there is no data, and there is
+   * no error, it means data is still loading.
+   */
+  const [snapshot, isLoading] = useCollection_fork(_query);
+
+  const docs = useMemo(() => {
+    if (!snapshot) {
+      return undefined;
+    }
+    return snapshot.docs.map((doc) => makeMutableDocument(doc));
+  }, [snapshot]);
+
+  return [docs, isLoading];
+}
