@@ -23,7 +23,7 @@ export function updateDoc<T extends DocumentData>(
   return manager.run({ reference, data });
 }
 
-export function registerUpdateDocMiddleware(
+export function experimental_registerUpdateDocMiddleware(
   middleware: Parameters<(typeof manager)["use"]>[0]
 ) {
   manager.use(middleware);

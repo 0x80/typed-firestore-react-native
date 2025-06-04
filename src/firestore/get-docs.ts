@@ -29,7 +29,7 @@ export function getDocs<T extends DocumentData>(
   return manager.run({ query, source }) as Promise<QuerySnapshot<T>>;
 }
 
-export function registerGetDocsMiddleware(
+export function experimental_registerGetDocsMiddleware(
   middleware: Parameters<(typeof manager)["use"]>[0]
 ) {
   manager.use(middleware);

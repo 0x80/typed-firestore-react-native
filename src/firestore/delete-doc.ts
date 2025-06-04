@@ -15,7 +15,7 @@ export function deleteDoc<T extends DocumentData>(
   return manager.run({ reference });
 }
 
-export function registerDeleteDocMiddleware(
+export function experimental_registerDeleteDocMiddleware(
   middleware: Parameters<(typeof manager)["use"]>[0]
 ) {
   manager.use(middleware);
