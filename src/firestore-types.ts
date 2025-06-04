@@ -7,6 +7,12 @@ import type {
   QueryConstraint,
 } from "@react-native-firebase/firestore";
 
+export type {
+  QueryConstraint,
+  UpdateData,
+  FirestoreError,
+} from "@react-native-firebase/firestore";
+
 export type DocumentData = FirebaseFirestoreTypes.DocumentData;
 
 export type DocumentReference<
