@@ -13,16 +13,20 @@ import { MiddlewareManager } from "./middleware-manager";
 type GetDocSource = "default" | "cache" | "server";
 
 const manager = new MiddlewareManager<
-  { reference: Parameters<typeof getDocFirestore>[0]; source: GetDocSource },
-  ReturnType<typeof getDocFirestore>
+  {
+    reference: Parameters<typeof getDocFirestore<DocumentData>>[0];
+    source: GetDocSource;
+  },
+  ReturnType<typeof getDocFirestore<DocumentData>>
 >(({ reference, source }) => {
   switch (source) {
-    case "default":
-      return getDocFirestore(reference);
     case "cache":
       return getDocFromCache(reference);
     case "server":
       return getDocFromServer(reference);
+    case "default":
+    default:
+      return getDocFirestore(reference);
   }
 });
 
