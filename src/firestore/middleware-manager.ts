@@ -15,15 +15,15 @@ export class MiddlewareManager<T, R> {
     return this;
   }
 
-  run(ctx: T): R {
-    const dispatch = (i: number): R => {
+  run(initialCtx: T): R {
+    const dispatch = (i: number, ctx: T): R => {
       if (i >= this.middlewares.length) {
         return this.handler(ctx);
       }
       const middleware = this.middlewares[i]!;
-      return middleware(ctx, () => dispatch(i + 1));
+      return middleware(ctx, (newCtx) => dispatch(i + 1, newCtx));
     };
 
-    return dispatch(0);
+    return dispatch(0, initialCtx);
   }
 }
