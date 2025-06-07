@@ -1,10 +1,6 @@
 import { useCallback } from "react";
 import { useLoadingValue, useIsFirestoreQueryEqual } from "./fork/helpers";
-import {
-  type FirestoreError,
-  getCountFromServer,
-  query,
-} from "@react-native-firebase/firestore";
+import { type FirestoreError, query } from "@react-native-firebase/firestore";
 import type {
   QueryConstraints,
   DocumentData,
@@ -14,6 +10,7 @@ import type {
 import { useEffect } from "react";
 import { useIsMounted } from "./fork/helpers";
 import { getErrorMessage, isDefined } from "./utils";
+import { getCount } from "./firestore";
 
 function useCollectionCount<T extends DocumentData>(
   query?: Query<T>
@@ -32,7 +29,7 @@ function useCollectionCount<T extends DocumentData>(
     }
 
     try {
-      const result = await getCountFromServer(query);
+      const result = await getCount(query);
       if (isMounted) {
         setValue(result.data().count);
       }
