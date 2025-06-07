@@ -50,7 +50,8 @@ export function useSpecificDocumentDataMaybe<T extends DocumentData>(
   | [T, false, FirestoreError | undefined]
   | [undefined, true, FirestoreError | undefined] {
   const [document, , error] = useSpecificDocumentMaybe(documentRef);
-  return document ? [document?.data, false, error] : [undefined, true, error];
+
+  return document ? [document.data, false, error] : [undefined, true, error];
 }
 
 export function useSpecificDocumentOnce<T extends DocumentData>(

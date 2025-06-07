@@ -62,7 +62,7 @@ export function useDocumentDataMaybe<T extends DocumentData>(
   | [undefined, true, FirestoreError | undefined] {
   const [document, , error] = useDocumentMaybe(collectionRef, documentId);
 
-  return document ? [document?.data, false, error] : [undefined, true, error];
+  return document ? [document.data, false, error] : [undefined, true, error];
 }
 
 export function useDocumentOnceMaybe<T extends DocumentData>(
