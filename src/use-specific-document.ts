@@ -1,84 +1,77 @@
 import { useMemo } from "react";
-import type { DocumentData, DocumentReference } from "./firestore-types";
+import type {
+  DocumentData,
+  DocumentReference,
+  FirestoreError,
+} from "./firestore-types";
 import { useDocument_fork, useDocumentOnce_fork } from "./fork";
 import { makeMutableDocument } from "./make-mutable-document";
 import type { FsMutableDocument } from "./types";
 
 export function useSpecificDocument<T extends DocumentData>(
   documentRef: DocumentReference<T>
-): [FsMutableDocument<T>, false] | [undefined, true] {
+) {
   /**
-   * We do not need the loading state really. If there is no data, and there is
-   * no error, it means data is still loading.
+   * Currently the same as useSpecificDocumentMaybe.
+   *
+   * @todo: investigate whether to throw in case of an permission error
    */
-  const [snapshot, , error] = useDocument_fork(documentRef);
-
-  if (error) {
-    throw error;
-  }
-
-  const document = useMemo(
-    () => (snapshot?.exists ? makeMutableDocument(snapshot) : undefined),
-    [snapshot]
-  );
-
-  return document ? [document, false] : [undefined, true];
+  return useSpecificDocumentMaybe(documentRef);
 }
 
-/** A version of useDocument that doesn't throw when the document doesn't exist. */
 export function useSpecificDocumentMaybe<T extends DocumentData>(
   documentRef: DocumentReference<T>
-): [FsMutableDocument<T> | undefined, boolean] {
-  const [snapshot, isLoading] = useDocument_fork(documentRef);
+):
+  | [FsMutableDocument<T>, false, FirestoreError | undefined]
+  | [undefined, true, FirestoreError | undefined] {
+  const [snapshot, , error] = useDocument_fork(documentRef);
 
   const document = useMemo(
     () => (snapshot?.exists ? makeMutableDocument(snapshot) : undefined),
     [snapshot]
   );
 
-  return [document, isLoading];
+  return document ? [document, false, error] : [undefined, true, error];
 }
 
 export function useSpecificDocumentData<T extends DocumentData>(
   documentRef: DocumentReference<T>
-): [T, false] | [undefined, true] {
-  const [document, isLoading] = useSpecificDocument(documentRef);
+):
+  | [T, false, FirestoreError | undefined]
+  | [undefined, true, FirestoreError | undefined] {
+  const [document, , error] = useSpecificDocument(documentRef);
 
-  return isLoading ? [undefined, true] : [document.data, false];
+  return document ? [document.data, false, error] : [undefined, true, error];
 }
 
 export function useSpecificDocumentDataMaybe<T extends DocumentData>(
   documentRef: DocumentReference<T>
-): [T | undefined, boolean] {
-  const [document, isLoading] = useSpecificDocumentMaybe(documentRef);
-  return [document?.data, isLoading];
+):
+  | [T, false, FirestoreError | undefined]
+  | [undefined, true, FirestoreError | undefined] {
+  const [document, , error] = useSpecificDocumentMaybe(documentRef);
+  return document ? [document?.data, false, error] : [undefined, true, error];
 }
 
 export function useSpecificDocumentOnce<T extends DocumentData>(
   documentRef: DocumentReference<T>
-): [FsMutableDocument<T>, false] | [undefined, true] {
-  /**
-   * We do not need the loading state really. If there is no data, and there is
-   * no error, it means data is still loading.
-   */
+):
+  | [FsMutableDocument<T>, false]
+  | [undefined, true, FirestoreError | undefined] {
   const [snapshot, , error] = useDocumentOnce_fork(documentRef);
-
-  if (error) {
-    throw error;
-  }
 
   const document = useMemo(
     () => (snapshot?.exists ? makeMutableDocument(snapshot) : undefined),
     [snapshot]
   );
 
-  return document ? [document, false] : [undefined, true];
+  return document ? [document, false] : [undefined, true, error];
 }
 
 export function useSpecificDocumentDataOnce<T extends DocumentData>(
   documentRef: DocumentReference<T>
-): [T, false] | [undefined, true] {
-  const [document, isLoading] = useSpecificDocumentOnce(documentRef);
+): [T, false] | [undefined, true, FirestoreError | undefined] {
+  const [document, , error] = useSpecificDocumentOnce(documentRef);
 
-  return isLoading ? [undefined, true] : [document.data, false];
+  return document ? [document.data, false] : [undefined, true, error];
 }
