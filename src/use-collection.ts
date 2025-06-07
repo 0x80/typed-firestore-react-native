@@ -1,19 +1,34 @@
-import { limit, query } from "@react-native-firebase/firestore";
+import { limit, query } from "./firestore";
 import { useMemo } from "react";
 import type {
   CollectionReference,
   DocumentData,
+  FirestoreError,
   QueryConstraints,
 } from "./firestore-types";
 import { useCollection_fork, useCollectionOnce_fork } from "./fork";
 import { makeMutableDocument } from "./make-mutable-document";
 import type { FsMutableDocument } from "./types";
-import { getErrorMessage, isDefined } from "./utils";
+import { isDefined } from "./utils";
 
 export function useCollection<T extends DocumentData>(
   collectionRef: CollectionReference<T>,
   ...queryConstraints: QueryConstraints
-): [FsMutableDocument<T>[], false] | [undefined, true] {
+) {
+  /**
+   * Currently the same as useCollectionMaybe.
+   *
+   * @todo: investigate whether to throw in case of an permission error
+   */
+  return useCollectionMaybe(collectionRef, ...queryConstraints);
+}
+
+export function useCollectionMaybe<T extends DocumentData>(
+  collectionRef: CollectionReference<T>,
+  ...queryConstraints: QueryConstraints
+):
+  | [FsMutableDocument<T>[], false, FirestoreError | undefined]
+  | [undefined, true, FirestoreError | undefined] {
   const hasNoConstraints = queryConstraints.length === 0;
 
   const _query = hasNoConstraints
@@ -26,26 +41,20 @@ export function useCollection<T extends DocumentData>(
    */
   const [snapshot, , error] = useCollection_fork(_query);
 
-  if (error) {
-    throw new Error(
-      `Failed to execute query on ${collectionRef.path}: ${getErrorMessage(error)}`
-    );
-  }
+  const docs = useMemo(
+    () => snapshot?.docs.map((doc) => makeMutableDocument(doc)),
+    [snapshot]
+  );
 
-  const docs = useMemo(() => {
-    if (!snapshot) {
-      return undefined;
-    }
-    return snapshot.docs.map((doc) => makeMutableDocument(doc));
-  }, [snapshot]);
-
-  return docs ? [docs, false] : [undefined, true];
+  return docs ? [docs, false, error] : [undefined, true, error];
 }
 
 export function useCollectionOnce<T extends DocumentData>(
   collectionRef: CollectionReference<T>,
   ...queryConstraints: QueryConstraints
-): [FsMutableDocument<T>[], false] | [undefined, true] {
+):
+  | [FsMutableDocument<T>[], false]
+  | [undefined, true, FirestoreError | undefined] {
   const hasNoConstraints = queryConstraints.length === 0;
 
   const _query = hasNoConstraints
@@ -58,12 +67,6 @@ export function useCollectionOnce<T extends DocumentData>(
    */
   const [snapshot, , error] = useCollectionOnce_fork(_query);
 
-  if (error) {
-    throw new Error(
-      `Failed to execute query on ${collectionRef.path}: ${getErrorMessage(error)}`
-    );
-  }
-
   const docs = useMemo(() => {
     if (!snapshot) {
       return undefined;
@@ -71,27 +74,5 @@ export function useCollectionOnce<T extends DocumentData>(
     return snapshot.docs.map((doc) => makeMutableDocument(doc));
   }, [snapshot]);
 
-  return docs ? [docs, false] : [undefined, true];
-}
-
-export function useCollectionMaybe<T extends DocumentData>(
-  collectionRef: CollectionReference<T>,
-  ...queryConstraints: QueryConstraints
-): [FsMutableDocument<T>[] | undefined, boolean] {
-  const hasNoConstraints = queryConstraints.length === 0;
-
-  const _query = hasNoConstraints
-    ? query(collectionRef, limit(500))
-    : query(collectionRef, ...queryConstraints.filter(isDefined));
-
-  const [snapshot, isLoading] = useCollection_fork(_query);
-
-  const docs = useMemo(() => {
-    if (!snapshot) {
-      return undefined;
-    }
-    return snapshot.docs.map((doc) => makeMutableDocument(doc));
-  }, [snapshot]);
-
-  return [docs, isLoading];
+  return docs ? [docs, false] : [undefined, true, error];
 }
