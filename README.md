@@ -39,10 +39,9 @@ import {
   collection,
   FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore";
+import type { CollectionReference } from "@typed-firestore/react-native";
 import { db } from "./firestore";
 import { User, WishlistItem, Book } from "./types";
-
-type CollectionReference<T extends FirebaseFirestoreTypes.DocumentData> = FirebaseFirestoreTypes.CollectionReference<T>;
 
 export const refs = {
   /** For top-level collections it's easy */
