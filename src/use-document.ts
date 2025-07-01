@@ -1,6 +1,10 @@
-import { doc } from "@react-native-firebase/firestore";
+import { doc } from "./firestore";
 import { useMemo } from "react";
-import type { CollectionReference, DocumentData } from "./firestore-types";
+import type {
+  CollectionReference,
+  DocumentData,
+  FirestoreError,
+} from "./firestore-types";
 import { useDocument_fork, useDocumentOnce_fork } from "./fork";
 import { makeMutableDocument } from "./make-mutable-document";
 import type { FsMutableDocument } from "./types.js";
@@ -8,87 +12,93 @@ import type { FsMutableDocument } from "./types.js";
 export function useDocument<T extends DocumentData>(
   collectionRef: CollectionReference<T>,
   documentId?: string
-): [FsMutableDocument<T>, false] | [undefined, true] {
+) {
+  /**
+   * Currently the same as useDocumentMaybe.
+   *
+   * @todo: investigate whether to throw in case of an permission error
+   */
+  return useDocumentMaybe(collectionRef, documentId);
+}
+
+export function useDocumentMaybe<T extends DocumentData>(
+  collectionRef: CollectionReference<T>,
+  documentId?: string
+):
+  | [FsMutableDocument<T>, false, FirestoreError | undefined]
+  | [undefined, true, FirestoreError | undefined] {
   const ref = documentId ? doc(collectionRef, documentId) : undefined;
+
   /**
    * We do not need the loading state really. If there is no data, and there is
    * no error, it means data is still loading.
    */
   const [snapshot, , error] = useDocument_fork(ref);
 
-  if (error) {
-    throw error;
-  }
-
   const document = useMemo(
     () => (snapshot?.exists ? makeMutableDocument(snapshot) : undefined),
     [snapshot]
   );
 
-  return document ? [document, false] : [undefined, true];
-}
-
-/** A version of useDocument that doesn't throw when the document doesn't exist. */
-export function useDocumentMaybe<T extends DocumentData>(
-  collectionRef: CollectionReference<T>,
-  documentId?: string
-): [FsMutableDocument<T> | undefined, boolean] {
-  const ref = documentId ? doc(collectionRef, documentId) : undefined;
-  const [snapshot, isLoading] = useDocument_fork(ref);
-
-  const document = useMemo(
-    () => (snapshot?.exists ? makeMutableDocument(snapshot) : undefined),
-    [snapshot]
-  );
-
-  return [document, isLoading];
+  return document ? [document, false, error] : [undefined, true, error];
 }
 
 export function useDocumentData<T extends DocumentData>(
   collectionRef: CollectionReference<T>,
   documentId?: string
-): [T, false] | [undefined, true] {
-  const [document, isLoading] = useDocument(collectionRef, documentId);
+):
+  | [T, false, FirestoreError | undefined]
+  | [undefined, true, FirestoreError | undefined] {
+  const [document, , error] = useDocument(collectionRef, documentId);
 
-  return isLoading ? [undefined, true] : [document.data, false];
+  return document ? [document.data, false, error] : [undefined, true, error];
 }
 
 export function useDocumentDataMaybe<T extends DocumentData>(
   collectionRef: CollectionReference<T>,
   documentId?: string
-): [T | undefined, boolean] {
-  const [document, isLoading] = useDocumentMaybe(collectionRef, documentId);
-  return [document?.data, isLoading];
+):
+  | [T, false, FirestoreError | undefined]
+  | [undefined, true, FirestoreError | undefined] {
+  const [document, , error] = useDocumentMaybe(collectionRef, documentId);
+
+  return document ? [document.data, false, error] : [undefined, true, error];
 }
 
-export function useDocumentOnce<T extends DocumentData>(
+export function useDocumentOnceMaybe<T extends DocumentData>(
   collectionRef: CollectionReference<T>,
   documentId?: string
-): [FsMutableDocument<T>, false] | [undefined, true] {
+):
+  | [FsMutableDocument<T>, false]
+  | [undefined, true, FirestoreError | undefined] {
   const ref = documentId ? doc(collectionRef, documentId) : undefined;
-  /**
-   * We do not need the loading state really. If there is no data, and there is
-   * no error, it means data is still loading.
-   */
   const [snapshot, , error] = useDocumentOnce_fork(ref);
-
-  if (error) {
-    throw error;
-  }
 
   const document = useMemo(
     () => (snapshot?.exists ? makeMutableDocument(snapshot) : undefined),
     [snapshot]
   );
 
-  return document ? [document, false] : [undefined, true];
+  return document ? [document, false] : [undefined, true, error];
+}
+
+export function useDocumentOnce<T extends DocumentData>(
+  collectionRef: CollectionReference<T>,
+  documentId?: string
+) {
+  /**
+   * Currently the same as useDocumentOnceMaybe.
+   *
+   * @todo: investigate whether to throw in case of an permission error
+   */
+  return useDocumentOnceMaybe(collectionRef, documentId);
 }
 
 export function useDocumentDataOnce<T extends DocumentData>(
   collectionRef: CollectionReference<T>,
   documentId?: string
-): [T, false] | [undefined, true] {
-  const [document, isLoading] = useDocumentOnce(collectionRef, documentId);
+): [T, false] | [undefined, true, FirestoreError | undefined] {
+  const [document, , error] = useDocumentOnce(collectionRef, documentId);
 
-  return isLoading ? [undefined, true] : [document.data, false];
+  return document ? [document.data, false] : [undefined, true, error];
 }
