@@ -78,7 +78,7 @@ jobs:
             ARGS+=(--preid "$PREID")
           fi
 
-          npm version "${ARGS[@]}" --git-tag-version true
+          npm version "${ARGS[@]}" --ignore-scripts --no-commit-hooks
 
           VERSION=$(node -p "require('./package.json').version")
           TAG="v${VERSION}"
