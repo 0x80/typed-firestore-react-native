@@ -57,8 +57,8 @@ export function useLoadingValue<T, E>(getDefaultValue?: () => T): LoadingValue<T
   const [state, dispatch] = useReducer(reducer<T, E>(), defaultState(defaultValue));
 
   const reset = useCallback(() => {
-    const defaultValue = getDefaultValue ? getDefaultValue() : undefined;
-    dispatch({ type: "reset", defaultValue });
+    const resetValue = getDefaultValue ? getDefaultValue() : undefined;
+    dispatch({ type: "reset", defaultValue: resetValue });
   }, [getDefaultValue]);
 
   const setError = useCallback((error: E) => {

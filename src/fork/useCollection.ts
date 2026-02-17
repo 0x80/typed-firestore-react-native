@@ -58,21 +58,21 @@ export function useCollectionOnce_fork<T extends DocumentData>(
   const isMounted = useIsMounted();
   const ref = useIsFirestoreQueryEqual<Query<T>>(query, reset);
 
-  const loadData = useCallback(async (query?: Query<T> | null, options?: Options & OnceOptions) => {
-    if (!query) {
+  const loadData = useCallback(async (q?: Query<T> | null, opts?: Options & OnceOptions) => {
+    if (!q) {
       setValue(undefined);
       return;
     }
-    const get = getDocsFnFromGetOptions(options?.getOptions);
+    const get = getDocsFnFromGetOptions(opts?.getOptions);
 
     try {
-      const result = await get(query);
+      const result = await get(q);
       if (isMounted) {
         setValue(result);
       }
-    } catch (error) {
+    } catch (err) {
       if (isMounted) {
-        setError(error as FirestoreError);
+        setError(err as FirestoreError);
       }
     }
   }, []);

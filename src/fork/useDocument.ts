@@ -66,12 +66,12 @@ export function useDocumentOnce_fork<T extends DocumentData>(
   const ref = useIsFirestoreRefEqual(docRef, reset);
 
   const loadData = useCallback(
-    async (reference?: DocumentReference<T> | null, options?: OnceOptions) => {
+    async (reference?: DocumentReference<T> | null, opts?: OnceOptions) => {
       if (!reference) {
         setValue(undefined);
         return;
       }
-      const get = getDocFnFromGetOptions(options?.getOptions);
+      const get = getDocFnFromGetOptions(opts?.getOptions);
 
       try {
         const result = await get(reference);
