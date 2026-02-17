@@ -1,10 +1,5 @@
 import { renderHook } from "@testing-library/react-hooks";
-import firestore, {
-  collection,
-  where,
-  orderBy,
-  limit,
-} from "@react-native-firebase/firestore";
+import firestore, { collection, where, orderBy, limit } from "@react-native-firebase/firestore";
 import { useCollection } from "../use-collection";
 import type { CollectionReference } from "../firestore-types";
 import { describe, it, expect } from "vitest";
@@ -21,10 +16,7 @@ type TodoItem = {
 describe("useCollection", () => {
   it("should have correct type inference", () => {
     // This test is mainly for TypeScript type checking
-    const collectionRef = collection(
-      firestore(),
-      "todos"
-    ) as CollectionReference<TodoItem>;
+    const collectionRef = collection(firestore(), "todos") as CollectionReference<TodoItem>;
 
     // The actual test is that this compiles without type errors
     const { result } = renderHook(() => useCollection(collectionRef));
@@ -45,10 +37,7 @@ describe("useCollection", () => {
   });
 
   it("should work with query constraints", () => {
-    const collectionRef = collection(
-      firestore(),
-      "todos"
-    ) as CollectionReference<TodoItem>;
+    const collectionRef = collection(firestore(), "todos") as CollectionReference<TodoItem>;
 
     // The actual test is that this compiles without type errors
     const { result } = renderHook(() =>
@@ -57,8 +46,8 @@ describe("useCollection", () => {
         where("completed", "==", false),
         where("priority", ">", 1),
         orderBy("dueDate", "asc"),
-        limit(10)
-      )
+        limit(10),
+      ),
     );
 
     // TypeScript should infer this as: [FsMutableDocument<TodoItem>[], false] | [undefined, true]

@@ -5,16 +5,8 @@ import {
   onSnapshot,
 } from "@react-native-firebase/firestore";
 import { useCallback, useEffect, useMemo } from "react";
-import type {
-  DocumentData,
-  DocumentReference,
-  DocumentSnapshot,
-} from "~/firestore-types";
-import {
-  useIsFirestoreRefEqual,
-  useIsMounted,
-  useLoadingValue,
-} from "./helpers";
+import type { DocumentData, DocumentReference, DocumentSnapshot } from "~/firestore-types";
+import { useIsFirestoreRefEqual, useIsMounted, useLoadingValue } from "./helpers";
 import type {
   DataOptions,
   DocumentDataHook,
@@ -29,7 +21,7 @@ import type {
 
 export const useDocument_fork = <T extends DocumentData>(
   docRef?: DocumentReference<T>,
-  options?: Options
+  options?: Options,
 ): DocumentHook<T> => {
   const { error, loading, reset, setError, setValue, value } = useLoadingValue<
     DocumentSnapshot<T>,
@@ -43,16 +35,11 @@ export const useDocument_fork = <T extends DocumentData>(
       return;
     }
     const unsubscribe = options?.snapshotListenOptions
-      ? onSnapshot(
-          ref.current,
-          options.snapshotListenOptions,
-          setValue,
-          (err: Error) => {
-            if (err instanceof Error) {
-              setError(err);
-            }
+      ? onSnapshot(ref.current, options.snapshotListenOptions, setValue, (err: Error) => {
+          if (err instanceof Error) {
+            setError(err);
           }
-        )
+        })
       : onSnapshot(ref.current, setValue, (err: Error) => {
           if (err instanceof Error) {
             setError(err);
@@ -69,7 +56,7 @@ export const useDocument_fork = <T extends DocumentData>(
 
 export function useDocumentOnce_fork<T extends DocumentData>(
   docRef?: DocumentReference<T>,
-  options?: OnceOptions
+  options?: OnceOptions,
 ): DocumentOnceHook<T> {
   const { error, loading, reset, setError, setValue, value } = useLoadingValue<
     DocumentSnapshot<T>,
@@ -79,12 +66,12 @@ export function useDocumentOnce_fork<T extends DocumentData>(
   const ref = useIsFirestoreRefEqual(docRef, reset);
 
   const loadData = useCallback(
-    async (reference?: DocumentReference<T> | null, options?: OnceOptions) => {
+    async (reference?: DocumentReference<T> | null, opts?: OnceOptions) => {
       if (!reference) {
         setValue(undefined);
         return;
       }
-      const get = getDocFnFromGetOptions(options?.getOptions);
+      const get = getDocFnFromGetOptions(opts?.getOptions);
 
       try {
         const result = await get(reference);
@@ -99,13 +86,10 @@ export function useDocumentOnce_fork<T extends DocumentData>(
         }
       }
     },
-    []
+    [],
   );
 
-  const reloadData = useCallback(
-    () => loadData(ref.current, options),
-    [loadData, ref.current]
-  );
+  const reloadData = useCallback(() => loadData(ref.current, options), [loadData, ref.current]);
 
   useEffect(() => {
     if (!ref.current) {
@@ -125,7 +109,7 @@ export function useDocumentOnce_fork<T extends DocumentData>(
 
 export function useDocumentData_fork<T extends DocumentData>(
   docRef?: DocumentReference<T>,
-  options?: DataOptions
+  options?: DataOptions,
 ): DocumentDataHook<T> {
   const [snapshot, loading, error] = useDocument_fork<T>(docRef, options);
 
@@ -136,21 +120,16 @@ export function useDocumentData_fork<T extends DocumentData>(
 
 export function useDocumentDataOnce_fork<T extends DocumentData>(
   docRef?: DocumentReference<T>,
-  options?: OnceDataOptions
+  options?: OnceDataOptions,
 ): DocumentDataOnceHook<T> {
-  const [snapshot, loading, error, reloadData] = useDocumentOnce_fork<T>(
-    docRef,
-    options
-  );
+  const [snapshot, loading, error, reloadData] = useDocumentOnce_fork<T>(docRef, options);
 
   const value = getValueFromSnapshot<T>(snapshot);
 
   return [value, loading, error, reloadData];
 }
 
-const getDocFnFromGetOptions = (
-  { source }: GetOptions = { source: "default" }
-) => {
+const getDocFnFromGetOptions = ({ source }: GetOptions = { source: "default" }) => {
   switch (source) {
     default:
     case "default":
@@ -164,10 +143,10 @@ const getDocFnFromGetOptions = (
 
 const getValueFromSnapshot = <T extends DocumentData>(
   snapshot: DocumentSnapshot<T> | undefined,
-  initialValue?: T
+  initialValue?: T,
 ): T | undefined => {
   return useMemo(
     () => (snapshot?.exists ? snapshot.data() : initialValue),
-    [snapshot, initialValue]
+    [snapshot, initialValue],
   );
 };

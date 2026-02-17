@@ -7,7 +7,7 @@ import type { FsMutableDocument } from "./types.js";
 
 export function useDocument<T extends DocumentData>(
   collectionRef: CollectionReference<T>,
-  documentId?: string
+  documentId?: string,
 ): [FsMutableDocument<T>, false] | [undefined, true] {
   const ref = documentId ? doc(collectionRef, documentId) : undefined;
   /**
@@ -22,7 +22,7 @@ export function useDocument<T extends DocumentData>(
 
   const document = useMemo(
     () => (snapshot?.exists ? makeMutableDocument(snapshot) : undefined),
-    [snapshot]
+    [snapshot],
   );
 
   return document ? [document, false] : [undefined, true];
@@ -31,14 +31,14 @@ export function useDocument<T extends DocumentData>(
 /** A version of useDocument that doesn't throw when the document doesn't exist. */
 export function useDocumentMaybe<T extends DocumentData>(
   collectionRef: CollectionReference<T>,
-  documentId?: string
+  documentId?: string,
 ): [FsMutableDocument<T> | undefined, boolean] {
   const ref = documentId ? doc(collectionRef, documentId) : undefined;
   const [snapshot, isLoading] = useDocument_fork(ref);
 
   const document = useMemo(
     () => (snapshot?.exists ? makeMutableDocument(snapshot) : undefined),
-    [snapshot]
+    [snapshot],
   );
 
   return [document, isLoading];
@@ -46,7 +46,7 @@ export function useDocumentMaybe<T extends DocumentData>(
 
 export function useDocumentData<T extends DocumentData>(
   collectionRef: CollectionReference<T>,
-  documentId?: string
+  documentId?: string,
 ): [T, false] | [undefined, true] {
   const [document, isLoading] = useDocument(collectionRef, documentId);
 
@@ -55,7 +55,7 @@ export function useDocumentData<T extends DocumentData>(
 
 export function useDocumentDataMaybe<T extends DocumentData>(
   collectionRef: CollectionReference<T>,
-  documentId?: string
+  documentId?: string,
 ): [T | undefined, boolean] {
   const [document, isLoading] = useDocumentMaybe(collectionRef, documentId);
   return [document?.data, isLoading];
@@ -63,7 +63,7 @@ export function useDocumentDataMaybe<T extends DocumentData>(
 
 export function useDocumentOnce<T extends DocumentData>(
   collectionRef: CollectionReference<T>,
-  documentId?: string
+  documentId?: string,
 ): [FsMutableDocument<T>, false] | [undefined, true] {
   const ref = documentId ? doc(collectionRef, documentId) : undefined;
   /**
@@ -78,7 +78,7 @@ export function useDocumentOnce<T extends DocumentData>(
 
   const document = useMemo(
     () => (snapshot?.exists ? makeMutableDocument(snapshot) : undefined),
-    [snapshot]
+    [snapshot],
   );
 
   return document ? [document, false] : [undefined, true];
@@ -86,7 +86,7 @@ export function useDocumentOnce<T extends DocumentData>(
 
 export function useDocumentDataOnce<T extends DocumentData>(
   collectionRef: CollectionReference<T>,
-  documentId?: string
+  documentId?: string,
 ): [T, false] | [undefined, true] {
   const [document, isLoading] = useDocumentOnce(collectionRef, documentId);
 

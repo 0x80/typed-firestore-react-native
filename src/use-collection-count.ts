@@ -1,52 +1,42 @@
-import { useCallback } from "react";
-import { useLoadingValue, useIsFirestoreQueryEqual } from "./fork/helpers";
+import { useCallback, useEffect } from "react";
+import { useLoadingValue, useIsFirestoreQueryEqual, useIsMounted } from "./fork/helpers";
 import {
   type FirestoreError,
   getCountFromServer,
-  query,
+  query as firestoreQuery,
 } from "@react-native-firebase/firestore";
-import type {
-  QueryConstraints,
-  DocumentData,
-  CollectionReference,
-  Query,
-} from "./firestore-types";
-import { useEffect } from "react";
-import { useIsMounted } from "./fork/helpers";
+import type { QueryConstraints, DocumentData, CollectionReference, Query } from "./firestore-types";
 import { getErrorMessage, isDefined } from "./utils";
 
 function useCollectionCount<T extends DocumentData>(
-  query?: Query<T>
+  collectionQuery?: Query<T>,
 ): [number | undefined, boolean, FirestoreError | undefined, () => void] {
   const { error, loading, reset, setError, setValue, value } = useLoadingValue<
     number | undefined,
     FirestoreError
   >();
   const isMounted = useIsMounted();
-  const ref = useIsFirestoreQueryEqual<Query<T>>(query, reset);
+  const ref = useIsFirestoreQueryEqual<Query<T>>(collectionQuery, reset);
 
-  const loadData = useCallback(async (query?: Query<T> | null) => {
-    if (!query) {
+  const loadData = useCallback(async (q?: Query<T> | null) => {
+    if (!q) {
       setValue(undefined);
       return;
     }
 
     try {
-      const result = await getCountFromServer(query);
+      const result = await getCountFromServer(q);
       if (isMounted) {
         setValue(result.data().count);
       }
-    } catch (error) {
+    } catch (err) {
       if (isMounted) {
-        setError(error as FirestoreError);
+        setError(err as FirestoreError);
       }
     }
   }, []);
 
-  const reloadData = useCallback(
-    () => loadData(ref.current),
-    [loadData, ref.current]
-  );
+  const reloadData = useCallback(() => loadData(ref.current), [loadData, ref.current]);
 
   useEffect(() => {
     loadData(ref.current).catch(setError);
@@ -60,13 +50,11 @@ export function useCollectionCountOnce<T extends DocumentData>(
   ...queryConstraints: QueryConstraints
 ): [number, false] | [undefined, true] {
   const [value, , error] = useCollectionCount(
-    query(collectionRef, ...queryConstraints.filter(isDefined))
+    firestoreQuery(collectionRef, ...queryConstraints.filter(isDefined)),
   );
 
   if (error) {
-    throw new Error(
-      `Failed to execute query on ${collectionRef.path}: ${getErrorMessage(error)}`
-    );
+    throw new Error(`Failed to execute query on ${collectionRef.path}: ${getErrorMessage(error)}`);
   }
 
   return value !== undefined ? [value, false] : [undefined, true];

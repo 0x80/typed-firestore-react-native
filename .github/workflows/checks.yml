@@ -8,8 +8,8 @@ on:
   workflow_call:
 
 concurrency:
-  # Use a unique group per run when called from another workflow to prevent
-  # deadlocks between parent workflow and this one
+  # Use unique group per run when called from another workflow to prevent
+  # deadlocks. Otherwise group by ref so new pushes cancel in-progress runs.
   group: ${{ github.event_name == 'workflow_call' && format('{0}-{1}',
     github.workflow, github.run_id) || format('{0}-{1}', github.workflow,
     github.ref) }}
@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        command: [lint, type-check, test, build]
+        command: [check-types, check-format, check-lint, test]
 
     name: ${{ matrix.command }}
 
@@ -46,10 +46,6 @@ jobs:
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          # First tries exact match with lock file hash. If not found,
-          # falls back to any cache starting with 'pnpm-store-'.
-          # This way we get exact cache on repeated runs, but can still
-          # use older cache as starting point when dependencies change.
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
