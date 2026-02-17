@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        command: ["lint", "type-check", "test", "build"]
+        command: ["check-lint", "check-types", "test", "build"]
 
     name: ${{ matrix.command }}
 
