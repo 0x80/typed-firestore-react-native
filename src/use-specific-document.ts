@@ -5,7 +5,7 @@ import { makeMutableDocument } from "./make-mutable-document";
 import type { FsMutableDocument } from "./types.js";
 
 export function useSpecificDocument<T extends DocumentData>(
-  documentRef: DocumentReference<T>
+  documentRef: DocumentReference<T>,
 ): [FsMutableDocument<T>, false] | [undefined, true] {
   /**
    * We do not need the loading state really. If there is no data, and there is
@@ -19,7 +19,7 @@ export function useSpecificDocument<T extends DocumentData>(
 
   const document = useMemo(
     () => (snapshot?.exists ? makeMutableDocument(snapshot) : undefined),
-    [snapshot]
+    [snapshot],
   );
 
   return document ? [document, false] : [undefined, true];
@@ -27,20 +27,20 @@ export function useSpecificDocument<T extends DocumentData>(
 
 /** A version of useDocument that doesn't throw when the document doesn't exist. */
 export function useSpecificDocumentMaybe<T extends DocumentData>(
-  documentRef: DocumentReference<T>
+  documentRef: DocumentReference<T>,
 ): [FsMutableDocument<T> | undefined, boolean] {
   const [snapshot, isLoading] = useDocument_fork(documentRef);
 
   const document = useMemo(
     () => (snapshot?.exists ? makeMutableDocument(snapshot) : undefined),
-    [snapshot]
+    [snapshot],
   );
 
   return [document, isLoading];
 }
 
 export function useSpecificDocumentData<T extends DocumentData>(
-  documentRef: DocumentReference<T>
+  documentRef: DocumentReference<T>,
 ): [T, false] | [undefined, true] {
   const [document, isLoading] = useSpecificDocument(documentRef);
 
@@ -48,14 +48,14 @@ export function useSpecificDocumentData<T extends DocumentData>(
 }
 
 export function useSpecificDocumentDataMaybe<T extends DocumentData>(
-  documentRef: DocumentReference<T>
+  documentRef: DocumentReference<T>,
 ): [T | undefined, boolean] {
   const [document, isLoading] = useSpecificDocumentMaybe(documentRef);
   return [document?.data, isLoading];
 }
 
 export function useSpecificDocumentOnce<T extends DocumentData>(
-  documentRef: DocumentReference<T>
+  documentRef: DocumentReference<T>,
 ): [FsMutableDocument<T>, false] | [undefined, true] {
   /**
    * We do not need the loading state really. If there is no data, and there is
@@ -69,14 +69,14 @@ export function useSpecificDocumentOnce<T extends DocumentData>(
 
   const document = useMemo(
     () => (snapshot?.exists ? makeMutableDocument(snapshot) : undefined),
-    [snapshot]
+    [snapshot],
   );
 
   return document ? [document, false] : [undefined, true];
 }
 
 export function useSpecificDocumentDataOnce<T extends DocumentData>(
-  documentRef: DocumentReference<T>
+  documentRef: DocumentReference<T>,
 ): [T, false] | [undefined, true] {
   const [document, isLoading] = useSpecificDocumentOnce(documentRef);
 

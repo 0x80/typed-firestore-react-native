@@ -1,9 +1,5 @@
 import type { UpdateData } from "@react-native-firebase/firestore";
-import type {
-  DocumentData,
-  DocumentReference,
-  Transaction,
-} from "./firestore-types";
+import type { DocumentData, DocumentReference, Transaction } from "./firestore-types";
 
 /**
  * A simple serialize-able document type. Use this when defining functions that

@@ -1,10 +1,6 @@
 import { limit, query } from "@react-native-firebase/firestore";
 import { useMemo } from "react";
-import type {
-  CollectionReference,
-  DocumentData,
-  QueryConstraints,
-} from "./firestore-types";
+import type { CollectionReference, DocumentData, QueryConstraints } from "./firestore-types";
 import { useCollection_fork, useCollectionOnce_fork } from "./fork";
 import { makeMutableDocument } from "./make-mutable-document";
 import type { FsMutableDocument } from "./types";
@@ -27,9 +23,7 @@ export function useCollection<T extends DocumentData>(
   const [snapshot, , error] = useCollection_fork(_query);
 
   if (error) {
-    throw new Error(
-      `Failed to execute query on ${collectionRef.path}: ${getErrorMessage(error)}`
-    );
+    throw new Error(`Failed to execute query on ${collectionRef.path}: ${getErrorMessage(error)}`);
   }
 
   const docs = useMemo(() => {
@@ -59,9 +53,7 @@ export function useCollectionOnce<T extends DocumentData>(
   const [snapshot, , error] = useCollectionOnce_fork(_query);
 
   if (error) {
-    throw new Error(
-      `Failed to execute query on ${collectionRef.path}: ${getErrorMessage(error)}`
-    );
+    throw new Error(`Failed to execute query on ${collectionRef.path}: ${getErrorMessage(error)}`);
   }
 
   const docs = useMemo(() => {

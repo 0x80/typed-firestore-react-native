@@ -35,10 +35,9 @@ map each to the appropriate type, as shown below.
 
 ```ts
 // db-refs.ts
-import {
-  collection,
-  type CollectionReference,
-} from "@react-native-firebase/firestore";
+import { collection } from "@react-native-firebase/firestore";
+// Firestore types are re-exported from typed-firestore in a more convenient format.
+import type { CollectionReference } from "@typed-firestore/react-native";
 import { db } from "./firestore";
 import { User, WishlistItem, Book } from "./types";
 
@@ -48,10 +47,7 @@ export const refs = {
   books: collection(db, "books") as CollectionReference<Book>,
   /** For sub-collections you could use a function that returns the reference. */
   userWishlist: (userId: string) =>
-    collection(
-      db,
-      `users/${userId}/wishlist`
-    ) as CollectionReference<WishlistItem>,
+    collection(db, `users/${userId}/wishlist`) as CollectionReference<WishlistItem>,
 
   /** This object never needs to change */
 } as const;
@@ -60,7 +56,7 @@ export const refs = {
 Below is an example of how to use the hooks in a component:
 
 ```ts
-import { useDocument } from "@typed-firestore/react";
+import { useDocument } from "@typed-firestore/react-native";
 import { UpdateData } from "@react-native-firebase/firestore";
 
 export function DisplayName({userId}: {userId: string}) {
