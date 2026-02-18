@@ -29,7 +29,11 @@ export function useSpecificDocument<T extends DocumentData>(
 export function useSpecificDocumentMaybe<T extends DocumentData>(
   documentRef: DocumentReference<T>,
 ): [FsMutableDocument<T> | undefined, boolean] {
-  const [snapshot, isLoading] = useDocument_fork(documentRef);
+  const [snapshot, isLoading, error] = useDocument_fork(documentRef);
+
+  if (error) {
+    throw error;
+  }
 
   const document = useMemo(
     () => (snapshot?.exists ? makeMutableDocument(snapshot) : undefined),

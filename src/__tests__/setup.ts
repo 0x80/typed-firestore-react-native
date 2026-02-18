@@ -20,5 +20,7 @@ vi.mock("@react-native-firebase/firestore", () => {
     where: vi.fn().mockReturnValue(createQueryConstraint()),
     orderBy: vi.fn().mockReturnValue(createQueryConstraint()),
     onSnapshot: vi.fn(),
+    deleteDoc: vi.fn().mockResolvedValue(undefined),
+    updateDoc: vi.fn().mockResolvedValue(undefined),
   };
 });

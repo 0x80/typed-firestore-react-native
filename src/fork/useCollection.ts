@@ -67,11 +67,11 @@ export function useCollectionOnce_fork<T extends DocumentData>(
 
     try {
       const result = await get(q);
-      if (isMounted) {
+      if (isMounted.current) {
         setValue(result);
       }
     } catch (err) {
-      if (isMounted) {
+      if (isMounted.current) {
         setError(err as FirestoreError);
       }
     }

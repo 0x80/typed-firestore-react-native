@@ -76,7 +76,11 @@ export function useCollectionMaybe<T extends DocumentData>(
     ? query(collectionRef, limit(500))
     : query(collectionRef, ...queryConstraints.filter(isDefined));
 
-  const [snapshot, isLoading] = useCollection_fork(_query);
+  const [snapshot, isLoading, error] = useCollection_fork(_query);
+
+  if (error) {
+    throw new Error(`Failed to execute query on ${collectionRef.path}: ${getErrorMessage(error)}`);
+  }
 
   const docs = useMemo(() => {
     if (!snapshot) {
