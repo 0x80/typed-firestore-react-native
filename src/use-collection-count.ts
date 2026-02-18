@@ -26,11 +26,11 @@ function useCollectionCount<T extends DocumentData>(
 
     try {
       const result = await getCountFromServer(q);
-      if (isMounted) {
+      if (isMounted.current) {
         setValue(result.data().count);
       }
     } catch (err) {
-      if (isMounted) {
+      if (isMounted.current) {
         setError(err as FirestoreError);
       }
     }
