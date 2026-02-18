@@ -1,4 +1,4 @@
-import { renderHook } from "@testing-library/react-hooks";
+import { renderHook } from "./render-hook";
 import firestore, { collection, where, orderBy, limit } from "@react-native-firebase/firestore";
 import { useCollection } from "../use-collection";
 import type { CollectionReference } from "../firestore-types";
