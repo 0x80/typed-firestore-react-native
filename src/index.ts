@@ -1,6 +1,7 @@
 export * from "./firestore-types";
 export * from "./get-collection-count";
 export * from "./get-document";
+export * from "./get-documents";
 export * from "./get-specific-document";
 export * from "./make-document";
 export * from "./make-mutable-document";
@@ -10,3 +11,4 @@ export * from "./use-collection-count";
 export * from "./use-document";
 export * from "./use-specific-document";
 export * from "./utils";
+export * from "./write-document";
