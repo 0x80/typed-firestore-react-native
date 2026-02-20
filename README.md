@@ -158,11 +158,13 @@ The `set*` functions accept an optional `SetOptions` parameter for `{ merge: tru
 
 The following names are deprecated but still exported for backwards compatibility:
 
-| Deprecated name                    | Use instead           |
-| ---------------------------------- | --------------------- |
-| `getDocumentInTransaction`         | `getDocumentTx`       |
-| `getDocumentInTransactionMaybe`    | `getDocumentMaybeTx`  |
-| `getSpecificDocumentFromTransaction` | `getSpecificDocumentTx` |
+| Deprecated name                      | Use instead              |
+| ------------------------------------ | ------------------------ |
+| `getDocumentInTransaction`           | `getDocumentTx`          |
+| `getDocumentInTransactionMaybe`      | `getDocumentMaybeTx`     |
+| `getSpecificDocumentFromTransaction` | `getSpecificDocumentTx`  |
+| `makeMutableDocumentInTransaction`   | `makeMutableDocumentTx`  |
+| `FsMutableDocumentInTransaction`     | `FsMutableDocumentTx`    |
 
 ## Working with Documents
 
@@ -198,6 +200,20 @@ export type FsMutableDocument<T> = {
   update: (data: UpdateData<T>) => Promise<void>;
   updateWithPartial: (data: Partial<T>) => Promise<void>;
   delete: () => Promise<void>;
+};
+```
+
+The `*Tx` functions return `FsMutableDocumentTx`, which performs mutations
+through the transaction instead of directly:
+
+```ts
+export type FsMutableDocumentTx<T> = {
+  id: string;
+  data: T;
+  ref: DocumentReference;
+  update: (data: UpdateData<T>) => Transaction;
+  updateWithPartial: (data: Partial<T>) => Transaction;
+  delete: () => Transaction;
 };
 ```
 
