@@ -24,7 +24,7 @@ export async function getSpecificDocumentData<T extends DocumentData>(
   return docSnap.data();
 }
 
-export async function getSpecificDocumentFromTransaction<T extends DocumentData>(
+export async function getSpecificDocumentTx<T extends DocumentData>(
   transaction: Transaction,
   documentRef: DocumentReference<T>,
 ) {
@@ -34,3 +34,6 @@ export async function getSpecificDocumentFromTransaction<T extends DocumentData>
 
   return makeDocument(snapshot);
 }
+
+/** @deprecated Use `getSpecificDocumentTx` instead. */
+export const getSpecificDocumentFromTransaction = getSpecificDocumentTx;

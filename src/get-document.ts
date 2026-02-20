@@ -47,7 +47,7 @@ export async function getDocumentDataMaybe<T extends DocumentData>(
   return snapshot.data();
 }
 
-export async function getDocumentInTransaction<T extends DocumentData>(
+export async function getDocumentTx<T extends DocumentData>(
   transaction: Transaction,
   collectionRef: CollectionReference<T>,
   documentId: string,
@@ -59,7 +59,7 @@ export async function getDocumentInTransaction<T extends DocumentData>(
   return makeMutableDocument(snapshot);
 }
 
-export async function getDocumentInTransactionMaybe<T extends DocumentData>(
+export async function getDocumentMaybeTx<T extends DocumentData>(
   transaction: Transaction,
   collectionRef: CollectionReference<T>,
   documentId: string,
@@ -72,3 +72,9 @@ export async function getDocumentInTransactionMaybe<T extends DocumentData>(
 
   return makeMutableDocument(snapshot);
 }
+
+/** @deprecated Use `getDocumentTx` instead. */
+export const getDocumentInTransaction = getDocumentTx;
+
+/** @deprecated Use `getDocumentMaybeTx` instead. */
+export const getDocumentInTransactionMaybe = getDocumentMaybeTx;

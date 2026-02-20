@@ -23,7 +23,7 @@ export type FsMutableDocument<T extends DocumentData> = Readonly<{
 }> &
   FsDocument<T>;
 
-export type FsMutableDocumentInTransaction<T> = Readonly<{
+export type FsMutableDocumentTx<T> = Readonly<{
   ref: DocumentReference;
   update: (data: UpdateData<T>) => Transaction;
   /**
@@ -35,3 +35,6 @@ export type FsMutableDocumentInTransaction<T> = Readonly<{
   delete: () => Transaction;
 }> &
   FsDocument<T>;
+
+/** @deprecated Use `FsMutableDocumentTx` instead. */
+export type FsMutableDocumentInTransaction<T> = FsMutableDocumentTx<T>;

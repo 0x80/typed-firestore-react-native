@@ -129,12 +129,20 @@ const { data, isError } = useQuery({
 | `getDocument`                      | Fetch a document                                               |
 | `getDocumentData`                  | Fetch only the data part of a document                         |
 | `getDocumentMaybe`                 | Fetch a document that might not exist                          |
-| `getDocumentInTransaction`         | Fetch a document as part of a transaction                      |
-| `getDocumentInTransactionMaybe`    | Fetch a document that might not exist as part of a transaction |
+| `getDocumentTx`                    | Fetch a document as part of a transaction                      |
+| `getDocumentMaybeTx`               | Fetch a document that might not exist as part of a transaction |
 | `getSpecificDocument`              | Fetch a specific document                                      |
 | `getSpecificDocumentData`          | Fetch only the data part of a specific document                |
-| `getSpecificDocumentInTransaction` | Fetch a specific document as part of a transaction             |
+| `getSpecificDocumentTx`            | Fetch a specific document as part of a transaction             |
 | `getCollectionCount`               | Fetch the number of documents in a query                       |
+
+The following names are deprecated but still exported for backwards compatibility:
+
+| Deprecated name                    | Use instead           |
+| ---------------------------------- | --------------------- |
+| `getDocumentInTransaction`         | `getDocumentTx`       |
+| `getDocumentInTransactionMaybe`    | `getDocumentMaybeTx`  |
+| `getSpecificDocumentFromTransaction` | `getSpecificDocumentTx` |
 
 ## Working with Documents
 
