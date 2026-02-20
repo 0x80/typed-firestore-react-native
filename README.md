@@ -124,17 +124,37 @@ const { data, isError } = useQuery({
 });
 ```
 
-| Function                           | Description                                                    |
-| ---------------------------------- | -------------------------------------------------------------- |
-| `getDocument`                      | Fetch a document                                               |
-| `getDocumentData`                  | Fetch only the data part of a document                         |
-| `getDocumentMaybe`                 | Fetch a document that might not exist                          |
-| `getDocumentInTransaction`         | Fetch a document as part of a transaction                      |
-| `getDocumentInTransactionMaybe`    | Fetch a document that might not exist as part of a transaction |
-| `getSpecificDocument`              | Fetch a specific document                                      |
-| `getSpecificDocumentData`          | Fetch only the data part of a specific document                |
-| `getSpecificDocumentInTransaction` | Fetch a specific document as part of a transaction             |
-| `getCollectionCount`               | Fetch the number of documents in a query                       |
+| Function                             | Description                                                    |
+| ------------------------------------ | -------------------------------------------------------------- |
+| `getDocument`                        | Fetch a document                                               |
+| `getDocumentData`                    | Fetch only the data part of a document                         |
+| `getDocumentMaybe`                   | Fetch a document that might not exist                          |
+| `getDocumentDataMaybe`               | Fetch only the data part of a document that might not exist    |
+| `getDocumentInTransaction`           | Fetch a document as part of a transaction                      |
+| `getDocumentInTransactionMaybe`      | Fetch a document that might not exist as part of a transaction |
+| `getSpecificDocument`                | Fetch a specific document                                      |
+| `getSpecificDocumentData`            | Fetch only the data part of a specific document                |
+| `getSpecificDocumentFromTransaction` | Fetch a specific document as part of a transaction             |
+| `getDocuments`                       | Fetch all documents in a collection query                      |
+| `getDocumentsData`                   | Fetch only the data of all documents in a collection query     |
+| `getCollectionCount`                 | Fetch the number of documents in a query                       |
+
+### Write Functions
+
+Standalone functions for creating, updating, and deleting documents without
+fetching them first. Useful when you already know the document path and just want
+to write.
+
+| Function                 | Description                                     |
+| ------------------------ | ----------------------------------------------- |
+| `setDocument`            | Create or overwrite a document (supports merge) |
+| `setSpecificDocument`    | Create or overwrite a specific document         |
+| `updateDocument`         | Partially update an existing document           |
+| `updateSpecificDocument` | Partially update an existing specific document  |
+| `deleteDocument`         | Delete a document                               |
+| `deleteSpecificDocument` | Delete a specific document                      |
+
+The `set*` functions accept an optional `SetOptions` parameter for `{ merge: true }` or `{ mergeFields: [...] }` behavior. The `*Specific*` variants accept a `DocumentReference` directly instead of a collection ref + id.
 
 ## Working with Documents
 
@@ -168,7 +188,7 @@ export type FsMutableDocument<T> = {
   data: T;
   ref: DocumentReference<T>;
   update: (data: UpdateData<T>) => Promise<void>;
-  updatePartial: (data: PartialWithFieldValue<T>) => Promise<void>;
+  updateWithPartial: (data: Partial<T>) => Promise<void>;
   delete: () => Promise<void>;
 };
 ```
@@ -179,7 +199,9 @@ for more info.
 
 ## Client-Side Mutations
 
-In my projects I prefer to have all mutations happen on the server-side via an
+This library provides both document-level mutation methods (on `FsMutableDocument`) and standalone [write functions](#write-functions) (`setDocument`, `updateDocument`, `deleteDocument`, etc.) for performing client-side writes.
+
+That said, in my projects I prefer to have all mutations happen on the server-side via an
 API call. You might want to consider that, especially if older versions of your
 app could be around for a while, like with mobile apps. A bug in client-side
 code could have lasting effects on the consistency of your database, and
