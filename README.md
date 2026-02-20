@@ -135,6 +135,8 @@ const { data, isError } = useQuery({
 | `getSpecificDocument`                | Fetch a specific document                                      |
 | `getSpecificDocumentData`            | Fetch only the data part of a specific document                |
 | `getSpecificDocumentFromTransaction` | Fetch a specific document as part of a transaction             |
+| `getDocuments`                       | Fetch all documents in a collection query                      |
+| `getDocumentsData`                   | Fetch only the data of all documents in a collection query     |
 | `getCollectionCount`                 | Fetch the number of documents in a query                       |
 
 ### Write Functions
