@@ -1,7 +1,7 @@
 import { doc, getDoc } from "@react-native-firebase/firestore";
 import { invariant } from "~/utils";
 import type { CollectionReference, DocumentData, Transaction } from "./firestore-types";
-import { makeMutableDocument } from "./make-mutable-document";
+import { makeMutableDocument, makeMutableDocumentTx } from "./make-mutable-document";
 
 export async function getDocument<T extends DocumentData>(
   collectionRef: CollectionReference<T>,
@@ -47,7 +47,7 @@ export async function getDocumentDataMaybe<T extends DocumentData>(
   return snapshot.data();
 }
 
-export async function getDocumentInTransaction<T extends DocumentData>(
+export async function getDocumentTx<T extends DocumentData>(
   transaction: Transaction,
   collectionRef: CollectionReference<T>,
   documentId: string,
@@ -56,10 +56,10 @@ export async function getDocumentInTransaction<T extends DocumentData>(
 
   invariant(snapshot.exists, `No document available at ${collectionRef.path}/${documentId}`);
 
-  return makeMutableDocument(snapshot);
+  return makeMutableDocumentTx(snapshot, transaction);
 }
 
-export async function getDocumentInTransactionMaybe<T extends DocumentData>(
+export async function getDocumentMaybeTx<T extends DocumentData>(
   transaction: Transaction,
   collectionRef: CollectionReference<T>,
   documentId: string,
@@ -70,5 +70,11 @@ export async function getDocumentInTransactionMaybe<T extends DocumentData>(
     return;
   }
 
-  return makeMutableDocument(snapshot);
+  return makeMutableDocumentTx(snapshot, transaction);
 }
+
+/** @deprecated Use `getDocumentTx` instead. */
+export const getDocumentInTransaction = getDocumentTx;
+
+/** @deprecated Use `getDocumentMaybeTx` instead. */
+export const getDocumentInTransactionMaybe = getDocumentMaybeTx;

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { makeDocument } from "../make-document";
-import { makeMutableDocument, makeMutableDocumentInTransaction } from "../make-mutable-document";
+import { makeMutableDocument, makeMutableDocumentTx } from "../make-mutable-document";
 import type { DocumentSnapshot, Transaction } from "../firestore-types";
 
 type TestDoc = { name: string };
@@ -60,11 +60,11 @@ describe("makeMutableDocument", () => {
   });
 });
 
-describe("makeMutableDocumentInTransaction", () => {
+describe("makeMutableDocumentTx", () => {
   it("should return a mutable document when data exists", () => {
     const snapshot = createMockSnapshot({ id: "3", data: { name: "Carol" } });
     const tx = createMockTransaction();
-    const doc = makeMutableDocumentInTransaction(snapshot, tx);
+    const doc = makeMutableDocumentTx(snapshot, tx);
     expect(doc.id).toBe("3");
     expect(doc.data).toEqual({ name: "Carol" });
     expect(doc.ref).toBe(snapshot.ref);
@@ -76,8 +76,8 @@ describe("makeMutableDocumentInTransaction", () => {
   it("should throw when data is undefined", () => {
     const snapshot = createMockSnapshot({ id: "3", data: undefined });
     const tx = createMockTransaction();
-    expect(() => makeMutableDocumentInTransaction(snapshot, tx)).toThrow(
-      "makeMutableDocumentInTransaction called with a snapshot that has no data (id: 3)",
+    expect(() => makeMutableDocumentTx(snapshot, tx)).toThrow(
+      "makeMutableDocumentTx called with a snapshot that has no data (id: 3)",
     );
   });
 });

@@ -1,8 +1,7 @@
 import { getDoc } from "@react-native-firebase/firestore";
 import { invariant } from "~/utils";
 import type { DocumentData, DocumentReference, Transaction } from "./firestore-types";
-import { makeDocument } from "./make-document";
-import { makeMutableDocument } from "./make-mutable-document";
+import { makeMutableDocument, makeMutableDocumentTx } from "./make-mutable-document";
 
 export async function getSpecificDocument<T extends DocumentData>(
   documentRef: DocumentReference<T>,
@@ -24,7 +23,7 @@ export async function getSpecificDocumentData<T extends DocumentData>(
   return docSnap.data();
 }
 
-export async function getSpecificDocumentFromTransaction<T extends DocumentData>(
+export async function getSpecificDocumentTx<T extends DocumentData>(
   transaction: Transaction,
   documentRef: DocumentReference<T>,
 ) {
@@ -32,5 +31,8 @@ export async function getSpecificDocumentFromTransaction<T extends DocumentData>
 
   invariant(snapshot.exists, `No document available at ${documentRef.path}`);
 
-  return makeDocument(snapshot);
+  return makeMutableDocumentTx(snapshot, transaction);
 }
+
+/** @deprecated Use `getSpecificDocumentTx` instead. */
+export const getSpecificDocumentFromTransaction = getSpecificDocumentTx;

@@ -1,5 +1,5 @@
 import { deleteDoc, updateDoc, type UpdateData } from "@react-native-firebase/firestore";
-import type { FsMutableDocument, FsMutableDocumentInTransaction } from "~/types";
+import type { FsMutableDocument, FsMutableDocumentTx } from "~/types";
 import type { DocumentData, DocumentSnapshot, Transaction } from "./firestore-types";
 
 export function makeMutableDocument<T extends DocumentData>(
@@ -23,15 +23,15 @@ export function makeMutableDocument<T extends DocumentData>(
   };
 }
 
-export function makeMutableDocumentInTransaction<T extends DocumentData>(
+export function makeMutableDocumentTx<T extends DocumentData>(
   doc: DocumentSnapshot<T>,
   tx: Transaction,
-): FsMutableDocumentInTransaction<T> {
+): FsMutableDocumentTx<T> {
   const data = doc.data();
 
   if (data === undefined) {
     throw new Error(
-      `makeMutableDocumentInTransaction called with a snapshot that has no data (id: ${doc.id}). Ensure the document exists before calling this function.`,
+      `makeMutableDocumentTx called with a snapshot that has no data (id: ${doc.id}). Ensure the document exists before calling this function.`,
     );
   }
 
@@ -44,3 +44,6 @@ export function makeMutableDocumentInTransaction<T extends DocumentData>(
     delete: () => tx.delete(doc.ref),
   };
 }
+
+/** @deprecated Use `makeMutableDocumentTx` instead. */
+export const makeMutableDocumentInTransaction = makeMutableDocumentTx;
