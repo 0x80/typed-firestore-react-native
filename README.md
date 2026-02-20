@@ -129,7 +129,7 @@ const { data, isError } = useQuery({
 | `getDocument`                        | Fetch a document                                               |
 | `getDocumentData`                    | Fetch only the data part of a document                         |
 | `getDocumentMaybe`                   | Fetch a document that might not exist                          |
-| `getDocumentDataMaybe`              | Fetch only the data part of a document that might not exist    |
+| `getDocumentDataMaybe`               | Fetch only the data part of a document that might not exist    |
 | `getDocumentInTransaction`           | Fetch a document as part of a transaction                      |
 | `getDocumentInTransactionMaybe`      | Fetch a document that might not exist as part of a transaction |
 | `getSpecificDocument`                | Fetch a specific document                                      |
@@ -146,11 +146,11 @@ to write.
 | Function                 | Description                                     |
 | ------------------------ | ----------------------------------------------- |
 | `setDocument`            | Create or overwrite a document (supports merge) |
-| `setSpecificDocument`    | Create or overwrite a specific document          |
-| `updateDocument`         | Partially update an existing document            |
-| `updateSpecificDocument` | Partially update an existing specific document   |
-| `deleteDocument`         | Delete a document                                |
-| `deleteSpecificDocument` | Delete a specific document                       |
+| `setSpecificDocument`    | Create or overwrite a specific document         |
+| `updateDocument`         | Partially update an existing document           |
+| `updateSpecificDocument` | Partially update an existing specific document  |
+| `deleteDocument`         | Delete a document                               |
+| `deleteSpecificDocument` | Delete a specific document                      |
 
 The `set*` functions accept an optional `SetOptions` parameter for `{ merge: true }` or `{ mergeFields: [...] }` behavior. The `*Specific*` variants accept a `DocumentReference` directly instead of a collection ref + id.
 
